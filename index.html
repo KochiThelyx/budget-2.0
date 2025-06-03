@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meine Vertragsübersicht</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#3367d6" />
+
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 1em;
+    }
+
+    button#ansicht-wechseln {
+      font-size: 16px;
+      margin-bottom: 1em;
+    }
+
+    /* === MOBIL === */
+    body.mobile-mode input,
+    body.mobile-mode select,
+    body.mobile-mode button {
+      font-size: 44px;
+      width: 100%;
+      padding: 0.4em 0.6em;
+      margin: 0.4em 0;
+      box-sizing: border-box;
+    }
+
+    body.mobile-mode label {
+      font-size: 38px;
+      font-weight: bold;
+    }
+
+    body.mobile-mode h1 {
+      font-size: 52px;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+
+  body.mobile-mode li {
+  font-size: 40px;
+  margin: 0.1em 0;
+  padding: 0;
+  line-height: 1.0;
+  list-style-type: none; /* optional: Punkt entfernen */
+}
+
+    body.mobile-mode table {
+      width: 100%;
+      font-size: 40px;
+      margin-top: 2em;
+    }
+
+    body.mobile-mode form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === DESKTOP === */
+    body.desktop-mode form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      align-items: center;
+    }
+
+    body.desktop-mode label {
+      display: inline-block;
+      font-weight: bold;
+      margin-right: 0.4em;
+      white-space: nowrap;
+    }
+
+    body.desktop-mode form > * {
+      flex: 0 0 auto;
+      margin-bottom: 0.5em;
+    }
+
+    body.desktop-mode input,
+    body.desktop-mode select {
+      padding: 0.3em 0.6em;
+      font-size: 14px;
+    }
+
+    body.desktop-mode li {
+      font-size: 14px;
+      margin-bottom: 0.5em;
+    }
+
+    body.desktop-mode h1 {
+      font-size: 28px;
+      margin-bottom: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>📄 Vertragsübersicht</h1>
+  <button id="ansicht-wechseln">Lade Ansicht ...</button>
+
+  <form>
+    <label for="nutzer">Benutzer:</label>
+    <select id="nutzer" name="nutzer">
+      <option value="">-- bitte wählen --</option>
+      <option value="Philipp">Philipp</option>
+      <option value="Franni">Franni</option>
+    </select>
+
+    <label for="name">Vertragsname:</label>
+    <input type="text" id="name" name="name" />
+
+    <label for="kosten">Kosten (€):</label>
+    <input type="number" id="kosten" name="kosten" step="0.01" />
+
+    <label for="intervall">Zahlungsintervall:</label>
+    <select id="intervall" name="intervall">
+      <option value="monatlich">monatlich</option>
+      <option value="halbjährlich">halbjährlich</option>
+      <option value="jährlich">jährlich</option>
+    </select>
+
+    <button type="submit">Vertrag hinzufügen</button>
+  </form>
+
+  <div id="vertraegeListe">
+    <h2>📋 Gespeicherte Verträge</h2>
+    <ul id="liste"></ul>
+    <div id="summenbereich"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyABCRMoZUrQtfABfwv1zf65jToV6IuOCoY",
+      authDomain: "vertragsapp.firebaseapp.com",
+      projectId: "vertragsapp",
+      storageBucket: "vertragsapp.firebasestorage.app",
+      messagingSenderId: "50405289863",
+      appId: "1:50405289863:web:237211c375a20b942bed22"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    db.enablePersistence().catch((err) => {
+      console.warn("⚠️ Offline-Modus konnte nicht aktiviert werden:", err.code);
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
