@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add(gespeicherterModus + "-mode");
   ansichtButton.textContent =
     gespeicherterModus === "mobile"
-      ? "Auf Desktopansicht wechseln"
-      : "Auf Mobilansicht wechseln";
+      ? "🖥 Auf Desktopansicht wechseln"
+      : "📱Auf Mobilansicht wechseln";
 
   ansichtButton.addEventListener("click", () => {
     const istJetztMobil = document.body.classList.contains("mobile-mode");
@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ansichtButton.textContent =
       neuerModus === "mobile"
-        ? "Auf Desktopansicht wechseln"
-        : "Auf Mobilansicht wechseln";
+        ? "🖥️ Auf Desktopansicht wechseln"
+        : "📱 Auf Mobilansicht wechseln";
   });
 
   // === Benutzer merken & vorauswählen ===
