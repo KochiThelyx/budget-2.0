@@ -175,7 +175,10 @@
       <button class="kachel">📊 Statistik</button>
       <button class="kachel">⚙️ Einstellungen</button>
     </div>
+	<div id="zitat-des-tages" style="margin-top: 3em; font-size: 24px; font-style: italic; max-width: 600px; text-align: center;"></div>
   </div>
+  
+  
 
   <!-- VERTRAGSBEREICH -->
   <div id="vertragsbereich">
@@ -256,7 +259,8 @@
 
   // Umschalten von Startseite zur Vertragsübersicht und zurück
   document.addEventListener("DOMContentLoaded", () => {
-    const btnVertraege = document.getElementById("btn-vertraege");
+  
+	const btnVertraege = document.getElementById("btn-vertraege");
     const btnHome = document.getElementById("btn-home");
     const startseite = document.getElementById("startseite");
     const vertragsbereich = document.getElementById("vertragsbereich");
