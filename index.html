@@ -13,15 +13,14 @@
     }
 
     button#ansicht-wechseln {
-      font-size: 24px;
+      font-size: 16px;
       margin-bottom: 1em;
     }
 
-    /* === MOBIL === */
     body.mobile-mode input,
     body.mobile-mode select,
     body.mobile-mode button {
-      font-size: 30px;
+      font-size: 36px;
       width: 100%;
       padding: 0.4em 0.6em;
       margin: 0.4em 0;
@@ -34,64 +33,77 @@
     }
 
     body.mobile-mode h1 {
-      font-size: 30px;
+      font-size: 44px;
       margin-bottom: 1em;
       text-align: center;
     }
 
-  body.mobile-mode li {
-  font-size: 30px;
-  margin: 0.1em 0;
-  padding: 0;
-  line-height: 1.0;
-  list-style-type: none; /* optional: Punkt entfernen */
-}
+    body.mobile-mode li {
+      font-size: 34px;
+      margin: 0.1em 0;
+      padding: 0;
+      line-height: 1.0;
+      list-style-type: none;
+    }
 
-    body.mobile-mode table {
+    body.mobile-mode table.vertraege {
       width: 100%;
-      font-size: 30px;
-      margin-top: 2em;
+      border-collapse: collapse;
+      font-size: 32px;
     }
 
-    body.mobile-mode form {
-      display: flex;
-      flex-direction: column;
+    body.mobile-mode table.vertraege th,
+    body.mobile-mode table.vertraege td {
+      padding: 0.3em;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
     }
 
-    /* === DESKTOP === */
-    body.desktop-mode form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5em;
-      align-items: center;
+    body.mobile-mode table.vertraege tbody tr:nth-child(odd) {
+      background-color: #f8f8f8;
     }
 
-    body.desktop-mode label {
-      display: inline-block;
-      font-weight: bold;
-      margin-right: 0.4em;
-      white-space: nowrap;
+    body.mobile-mode table.vertraege tbody tr:nth-child(even) {
+      background-color: #ffffff;
     }
 
-    body.desktop-mode form > * {
-      flex: 0 0 auto;
-      margin-bottom: 0.5em;
+    body.mobile-mode table.vertraege tbody tr:hover {
+      background-color: #eef;
+      cursor: pointer;
     }
 
-    body.desktop-mode input,
-    body.desktop-mode select {
-      padding: 0.3em 0.6em;
-      font-size: 14px;
+    body.mobile-mode .loeschen {
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #b00;
+      cursor: pointer;
     }
 
-    body.desktop-mode li {
-      font-size: 14px;
-      margin-bottom: 0.5em;
+    body.desktop-mode table.vertraege {
+      font-size: 16px;
+      width: 90%;
+      margin: 1em auto;
+      border-collapse: collapse;
     }
 
-    body.desktop-mode h1 {
-      font-size: 28px;
-      margin-bottom: 1em;
+    body.desktop-mode table.vertraege th,
+    body.desktop-mode table.vertraege td {
+      padding: 0.6em 1em;
+      text-align: left;
+    }
+
+    body.desktop-mode table.vertraege tbody tr:nth-child(odd) {
+      background-color: #f8f8f8;
+    }
+
+    body.desktop-mode table.vertraege tbody tr:nth-child(even) {
+      background-color: #ffffff;
+    }
+
+    body.desktop-mode table.vertraege tbody tr:hover {
+      background-color: #eef;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -105,7 +117,7 @@
       <option value="">-- bitte wählen --</option>
       <option value="Philipp">Philipp</option>
       <option value="Franni">Franni</option>
-	  <option value="Klopsmann">Klopsmann</option>
+      <option value="Klopsmann">Klopsmann</option>
     </select>
 
     <label for="name">Vertragsname:</label>
@@ -121,7 +133,18 @@
       <option value="jährlich">jährlich</option>
     </select>
 
-    <button type="submit">Vertrag hinzufügen</button>
+    <label for="startdatum">Startdatum (dd.mm.yy):</label>
+    <input type="text" id="startdatum" name="startdatum" placeholder="z. B. 03.06.25" />
+    <small style="font-size: 0.8em; color: #666;">Bitte Format: Tag.Monat.Jahr (z. B. 01.01.24)</small>
+
+    <label for="laufzeit">Laufzeit:</label>
+    <select id="laufzeit" name="laufzeit">
+      <option value="monatlich">monatlich kündbar</option>
+      <option value="12">12 Monate</option>
+      <option value="24">24 Monate</option>
+    </select>
+
+    <button type="submit" class="hinzufuegen-btn">➕ Hinzufügen</button>
   </form>
 
   <div id="vertraegeListe">
