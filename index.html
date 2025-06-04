@@ -4,104 +4,116 @@
   <meta charset="UTF-8" />
   <title>Meine Vertragsübersicht</title>
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#3367d6" />
-
+  <meta name="theme-color" content="#e6f2ff" />
   <style>
     body {
       font-family: sans-serif;
       margin: 1em;
+      background-color: #e6f2ff;
     }
 
-    button#ansicht-wechseln {
-      font-size: 16px;
+    .form-row {
+      display: flex;
+      gap: 1em;
       margin-bottom: 1em;
     }
 
-    body.mobile-mode input,
-    body.mobile-mode select,
-    body.mobile-mode button {
-      font-size: 36px;
+    .form-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+ .input-nutzer,
+.input-laufzeit {
+  width: auto;            /* Breite passt sich dem Inhalt an */
+  min-width: 100px;       /* Optional: Mindestbreite */
+  box-sizing: border-box;
+  text-align: center;     /* Text zentrieren */
+  /* Für Select-Elemente ist text-align nicht immer perfekt */
+  /* Deshalb zusätzlich: */
+  -webkit-text-align-last: center;  /* Chrome, Safari */
+  -moz-text-align-last: center;     /* Firefox */
+  text-align-last: center;           /* Standard */
+}
+
+
+
+    .input-name,
+    .input-kosten,
+    .input-intervall,
+    .input-startdatum {
       width: 100%;
-      padding: 0.4em 0.6em;
-      margin: 0.4em 0;
       box-sizing: border-box;
     }
 
-    body.mobile-mode label {
+    /* Mobile Styles */
+    body.mobile-mode input,
+    body.mobile-mode select {
+      font-size: 36px;
+      padding: 0.4em 0.6em;
+      margin: 0.4em 0;
+    }
+
+    body.mobile-mode button.hinzufuegen-btn {
+      font-size: 18px;
+      padding: 0.5em 1em;
+      margin: 1em auto;
+      display: block;
+      width: auto;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    body.mobile-mode button.hinzufuegen-btn:hover {
+      background-color: #357ABD;
+    }
+
+    label {
       font-size: 30px;
       font-weight: bold;
     }
 
-    body.mobile-mode h1 {
+    h1 {
       font-size: 44px;
       margin-bottom: 1em;
       text-align: center;
     }
 
-    body.mobile-mode li {
-      font-size: 34px;
-      margin: 0.1em 0;
-      padding: 0;
-      line-height: 1.0;
-      list-style-type: none;
-    }
-
     body.mobile-mode table.vertraege {
       width: 100%;
+      margin: 0;
       border-collapse: collapse;
-      font-size: 32px;
+      font-size: 30px;
+      display: table;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
     }
 
-    body.mobile-mode table.vertraege th,
-    body.mobile-mode table.vertraege td {
-      padding: 0.3em;
-      border-bottom: 1px solid #ccc;
-      text-align: left;
+    body.mobile-mode #liste {
+      padding: 0 !important;
+      margin: 0 !important;
     }
 
-    body.mobile-mode table.vertraege tbody tr:nth-child(odd) {
-      background-color: #f8f8f8;
-    }
-
-    body.mobile-mode table.vertraege tbody tr:nth-child(even) {
-      background-color: #ffffff;
-    }
-
-    body.mobile-mode table.vertraege tbody tr:hover {
-      background-color: #eef;
-      cursor: pointer;
-    }
-
-    body.mobile-mode .loeschen {
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #b00;
-      cursor: pointer;
-    }
-
-    body.desktop-mode table.vertraege {
-      font-size: 16px;
-      width: 90%;
-      margin: 1em auto;
-      border-collapse: collapse;
-    }
-
-    body.desktop-mode table.vertraege th,
-    body.desktop-mode table.vertraege td {
+    table.vertraege th,
+    table.vertraege td {
       padding: 0.6em 1em;
       text-align: left;
     }
 
-    body.desktop-mode table.vertraege tbody tr:nth-child(odd) {
+    table.vertraege tbody tr:nth-child(odd) {
       background-color: #f8f8f8;
     }
 
-    body.desktop-mode table.vertraege tbody tr:nth-child(even) {
+    table.vertraege tbody tr:nth-child(even) {
       background-color: #ffffff;
     }
 
-    body.desktop-mode table.vertraege tbody tr:hover {
+    table.vertraege tbody tr:hover {
       background-color: #eef;
       cursor: pointer;
     }
@@ -109,36 +121,44 @@
 </head>
 <body>
   <h1>📄 Vertragsübersicht</h1>
-  <button id="ansicht-wechseln">Lade Ansicht ...</button>
 
   <form>
     <label for="nutzer">Benutzer:</label>
-    <select id="nutzer" name="nutzer">
+    <select id="nutzer" name="nutzer" class="input-nutzer">
       <option value="">-- bitte wählen --</option>
       <option value="Philipp">Philipp</option>
       <option value="Franni">Franni</option>
       <option value="Klopsmann">Klopsmann</option>
     </select>
 
-    <label for="name">Vertragsname:</label>
-    <input type="text" id="name" name="name" />
+    <div class="form-row">
+      <div class="form-col">
+        <label for="name">Vertragsname:</label>
+        <input type="text" id="name" name="name" class="input-name" />
+      </div>
+      <div class="form-col">
+        <label for="kosten">Kosten (€):</label>
+        <input type="number" id="kosten" name="kosten" step="0.01" class="input-kosten" />
+      </div>
+    </div>
 
-    <label for="kosten">Kosten (€):</label>
-    <input type="number" id="kosten" name="kosten" step="0.01" />
-
-    <label for="intervall">Zahlungsintervall:</label>
-    <select id="intervall" name="intervall">
-      <option value="monatlich">monatlich</option>
-      <option value="halbjährlich">halbjährlich</option>
-      <option value="jährlich">jährlich</option>
-    </select>
-
-    <label for="startdatum">Startdatum (dd.mm.yy):</label>
-    <input type="text" id="startdatum" name="startdatum" placeholder="z. B. 03.06.25" />
-    <small style="font-size: 0.8em; color: #666;">Bitte Format: Tag.Monat.Jahr (z. B. 01.01.24)</small>
+    <div class="form-row">
+      <div class="form-col">
+        <label for="intervall">Zahlungsintervall:</label>
+        <select id="intervall" name="intervall" class="input-intervall">
+          <option value="monatlich">monatlich</option>
+          <option value="halbjährlich">halbjährlich</option>
+          <option value="jährlich">jährlich</option>
+        </select>
+      </div>
+      <div class="form-col">
+        <label for="startdatum">Startdatum (dd.mm.yy):</label>
+        <input type="text" id="startdatum" name="startdatum" placeholder="z. B. 03.06.25" class="input-startdatum" />
+      </div>
+    </div>
 
     <label for="laufzeit">Laufzeit:</label>
-    <select id="laufzeit" name="laufzeit">
+    <select id="laufzeit" name="laufzeit" class="input-laufzeit">
       <option value="monatlich">monatlich kündbar</option>
       <option value="12">12 Monate</option>
       <option value="24">24 Monate</option>
@@ -153,7 +173,7 @@
     <div id="summenbereich"></div>
   </div>
 
-  <!-- Firebase -->
+  <!-- Firebase & Skripte -->
   <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore-compat.js"></script>
   <script>
