@@ -8,29 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const laufzeitInput = document.querySelector("#laufzeit");
   const liste = document.querySelector("#liste");
   const summenbereich = document.querySelector("#summenbereich");
-  const ansichtButton = document.querySelector("#ansicht-wechseln");
+  const speichernButton = form.querySelector("button[type='submit']");
 
-  const gespeicherterModus = localStorage.getItem("ansicht") || "mobile";
-  document.body.classList.add(gespeicherterModus + "-mode");
-  ansichtButton.textContent =
-    gespeicherterModus === "mobile"
-      ? "🖥️ Zur Desktopansicht wechseln"
-      : "📱 Zur Mobilansicht wechseln";
+  let editModus = false;
+  let editID = null;
+  let aktuelleSortierung = { spalte: "name", richtung: "asc" };
 
-  ansichtButton.addEventListener("click", () => {
-    const istJetztMobil = document.body.classList.contains("mobile-mode");
-
-    document.body.classList.toggle("mobile-mode", !istJetztMobil);
-    document.body.classList.toggle("desktop-mode", istJetztMobil);
-
-    const neuerModus = istJetztMobil ? "desktop" : "mobile";
-    localStorage.setItem("ansicht", neuerModus);
-
-    ansichtButton.textContent =
-      neuerModus === "mobile"
-        ? "🖥️ Zur Desktopansicht wechseln"
-        : "📱 Zur Mobilansicht wechseln";
-  });
+  // Immer mobile-mode aktiv, keine Umschaltlogik
+  document.body.classList.add("mobile-mode");
 
   const gespeicherterNutzer = localStorage.getItem("nutzer");
   if (gespeicherterNutzer) {
@@ -44,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
     const nutzer = nutzerInput.value.trim();
     const name = nameInput.value.trim();
     const kosten = parseFloat(kostenInput.value);
@@ -51,7 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const startdatum = startdatumInput.value.trim();
     const laufzeit = laufzeitInput.value;
 
-    // Ablaufdatum berechnen
+    if (!nutzer || !name || isNaN(kosten)) {
+      alert("Bitte gültige Vertragsdaten eingeben.");
+      return;
+    }
+
     let ablaufdatum = "-";
     const datumParts = startdatum.split(".");
     if (datumParts.length === 3 && (laufzeit === "12" || laufzeit === "24")) {
@@ -67,11 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ablaufdatum = `${tagStr}.${monatStr}.${jahrStr}`;
     }
 
-    if (!nutzer || !name || isNaN(kosten)) {
-      alert("Bitte gültige Vertragsdaten eingeben.");
-      return;
-    }
-
     const vertrag = {
       nutzer,
       name,
@@ -80,12 +65,19 @@ document.addEventListener("DOMContentLoaded", () => {
       startdatum,
       laufzeit,
       ablaufdatum,
-      erstelltAm: new Date().toISOString()
+      erstelltAm: new Date().toISOString(),
     };
 
     try {
-      await db.collection("vertraege").add(vertrag);
+      if (editModus && editID) {
+        await db.collection("vertraege").doc(editID).set(vertrag);
+      } else {
+        await db.collection("vertraege").add(vertrag);
+      }
       form.reset();
+      speichernButton.textContent = "✚ Hinzufügen";
+      editModus = false;
+      editID = null;
       nutzerInput.value = nutzer;
       ladeVertraege();
     } catch (error) {
@@ -108,37 +100,75 @@ document.addEventListener("DOMContentLoaded", () => {
       const snapshot = await db.collection("vertraege").get();
       if (snapshot.empty) return;
 
-      const table = document.createElement("table");
-      table.className = "vertraege";
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Kosten</th>
-            <th>Intervall</th>
-            <th>Ende</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      `;
-
-      const tbody = table.querySelector("tbody");
-
-      const rows = [];
+      const vertraege = [];
 
       snapshot.forEach((doc) => {
         const v = doc.data();
         if (v.nutzer !== nutzer) return;
+        vertraege.push({ id: doc.id, ...v });
+      });
 
+      vertraege.sort((a, b) => {
+        const feld = aktuelleSortierung.spalte;
+        let valA = a[feld];
+        let valB = b[feld];
+        if (feld === "kosten") {
+          valA = parseFloat(valA);
+          valB = parseFloat(valB);
+        } else {
+          valA = (valA || "").toString().toLowerCase();
+          valB = (valB || "").toString().toLowerCase();
+        }
+        const cmp = valA < valB ? -1 : valA > valB ? 1 : 0;
+        return aktuelleSortierung.richtung === "asc" ? cmp : -cmp;
+      });
+
+      const table = document.createElement("table");
+      table.className = "vertraege";
+      const sortPfeil = (feld) =>
+        aktuelleSortierung.spalte === feld
+          ? aktuelleSortierung.richtung === "asc"
+            ? " ▲"
+            : " ▼"
+          : "";
+      table.innerHTML = `
+        <thead><tr>
+          <th data-sort="name">Name${sortPfeil("name")}</th>
+          <th data-sort="kosten">Kosten${sortPfeil("kosten")}</th>
+          <th data-sort="intervall">Intervall${sortPfeil("intervall")}</th>
+          <th data-sort="ablaufdatum">Ende${sortPfeil("ablaufdatum")}</th>
+          <th></th>
+        </tr></thead>
+        <tbody></tbody>
+      `;
+      const tbody = table.querySelector("tbody");
+      table.querySelectorAll("th[data-sort]").forEach((th) => {
+        th.style.cursor = "pointer";
+        th.addEventListener("click", () => {
+          const feld = th.dataset.sort;
+          if (aktuelleSortierung.spalte === feld) {
+            aktuelleSortierung.richtung =
+              aktuelleSortierung.richtung === "asc" ? "desc" : "asc";
+          } else {
+            aktuelleSortierung = { spalte: feld, richtung: "asc" };
+          }
+          ladeVertraege();
+        });
+      });
+
+      vertraege.forEach((v) => {
         const row = document.createElement("tr");
-        row.classList.add("datenzeile");
         row.innerHTML = `
           <td>${v.name}</td>
           <td>${v.kosten.toFixed(2)} €</td>
           <td>${v.intervall}</td>
           <td>${v.ablaufdatum || "-"}</td>
-          <td><button data-id="${doc.id}" class="loeschen">🗑️</button></td>
+          <td style="padding: 0;">
+            <div style="display: flex; gap: 0.4em; align-items: center;">
+              <button class="btn-bearbeiten" data-id="${v.id}" style="font-size:18px; background:none; border:none; padding:0; margin:0; line-height:1; cursor:pointer;">✏️</button>
+              <button class="btn-loeschen" data-id="${v.id}" style="font-size:18px; background:none; border:none; padding:0; margin:0; line-height:1; cursor:pointer;">🗑️</button>
+            </div>
+          </td>
         `;
         tbody.appendChild(row);
 
@@ -161,32 +191,27 @@ document.addEventListener("DOMContentLoaded", () => {
             detail.firstChild.style.display === "none" ? "block" : "none";
         });
 
-        if (v.intervall === "monatlich") summeMonatlich += v.kosten;
-        if (v.intervall === "halbjährlich") summeHalbjaehrlich += v.kosten;
-        if (v.intervall === "jährlich") summeJaehrlich += v.kosten;
+        row.querySelector(".btn-loeschen").addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const id = e.target.getAttribute("data-id");
+          await db.collection("vertraege").doc(id).delete();
+          ladeVertraege();
+        });
 
-        rows.push(row); // Speichern für Zebra-Stil
+        row.querySelector(".btn-bearbeiten").addEventListener("click", (e) => {
+          e.stopPropagation();
+          editModus = true;
+          editID = v.id;
+          nameInput.value = v.name;
+          kostenInput.value = v.kosten;
+          intervallInput.value = v.intervall;
+          startdatumInput.value = v.startdatum;
+          laufzeitInput.value = v.laufzeit;
+          speichernButton.textContent = "💾 Speichern";
+        });
       });
 
       liste.appendChild(table);
-
-      // Zebra-Stil manuell setzen
-      rows.forEach((zeile, index) => {
-        zeile.style.backgroundColor = index % 2 === 0 ? "#ffffff" : "#f8f8f8";
-      });
-
-      document.querySelectorAll(".loeschen").forEach((button) => {
-        button.addEventListener("click", async (e) => {
-          e.stopPropagation();
-          const id = button.getAttribute("data-id");
-          try {
-            await db.collection("vertraege").doc(id).delete();
-            ladeVertraege();
-          } catch (error) {
-            console.error("Fehler beim Löschen:", error);
-          }
-        });
-      });
 
       summenbereich.innerHTML = `
         <br><br>
@@ -202,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </table>
       `;
     } catch (error) {
-      console.error("Fehler beim Laden der Verträge:", error);
+      console.error("Fehler beim Laden:", error);
     }
   }
 
@@ -227,9 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
         d.getMonth() + 1
       ).padStart(2, "0")}.${String(d.getFullYear()).slice(-2)}`;
 
-    const von = format(start);
-    const bis = format(ende);
-    return `${von} – ${bis}`;
+    return `${format(start)} – ${format(ende)}`;
   }
 
   ladeVertraege();
