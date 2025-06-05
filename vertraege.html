@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>📄 Verträge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#e6f2ff" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 1em;
+      background-color: #e6f2ff;
+    }
+
+    h1 {
+      font-size: 44px;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1em;
+      margin-bottom: 1em;
+    }
+
+    .form-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-nutzer,
+    .input-laufzeit {
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .input-name,
+    .input-kosten,
+    .input-intervall,
+    .input-startdatum {
+  width: 100%;
+  max-width: 200px;
+}
+
+    label {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      font-size: 26px;
+      padding: 0.4em 0.6em;
+      margin: 0.4em 0;
+    }
+
+    button.hinzufuegen-btn {
+      font-size: 18px;
+      padding: 0.5em 1em;
+      margin: 1em auto;
+      display: block;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button.hinzufuegen-btn:hover {
+      background-color: #357ABD;
+    }
+
+    table.vertraege {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 20px;
+      margin-top: 1.5em;
+    }
+
+    table.vertraege th,
+    table.vertraege td {
+      padding: 0.6em 1em;
+      text-align: left;
+    }
+
+    table.vertraege tbody tr:nth-child(odd) {
+      background-color: #f8f8f8;
+    }
+
+    table.vertraege tbody tr:nth-child(even) {
+      background-color: #ffffff;
+    }
+
+    table.vertraege tbody tr:hover {
+      background-color: #eef;
+      cursor: pointer;
+    }
+
+    #liste {
+      padding: 0;
+      margin: 0;
+    }
+
+    #summenbereich {
+      margin-top: 1em;
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .zurueck-button {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      font-size: 22px;
+      background: none;
+      border: none;
+      color: #4a90e2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<a href="index.html" class="zurueck-button">🏠 Zurück</a>
+<h1>📄 Verträge</h1>
+
+<form>
+  <label for="nutzer">Benutzer:</label>
+  <select id="nutzer" name="nutzer" class="input-nutzer">
+    <option value="">-- bitte wählen --</option>
+    <option value="Philipp">Philipp</option>
+    <option value="Franni">Franni</option>
+    <option value="Klopsmann">Klopsmann</option>
+  </select>
+
+  <div class="form-row">
+    <div class="form-col">
+      <label for="name">Vertragsname:</label>
+      <input type="text" id="name" name="name" class="input-name" />
+    </div>
+    <div class="form-col">
+      <label for="kosten">Kosten (€):</label>
+      <input type="number" id="kosten" name="kosten" step="0.01" class="input-kosten" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-col">
+      <label for="intervall">Zahlungsintervall:</label>
+      <select id="intervall" name="intervall" class="input-intervall">
+        <option value="monatlich">monatlich</option>
+        <option value="halbjährlich">halbjährlich</option>
+        <option value="jährlich">jährlich</option>
+      </select>
+    </div>
+    <div class="form-col">
+      <label for="startdatum">Startdatum:</label>
+      <input type="text" id="startdatum" name="startdatum" placeholder="z. B. 03.06.25" class="input-startdatum" />
+    </div>
+  </div>
+
+  <label for="laufzeit">Laufzeit:</label>
+  <select id="laufzeit" name="laufzeit" class="input-laufzeit">
+    <option value="monatlich">monatlich kündbar</option>
+    <option value="12">12 Monate</option>
+    <option value="24">24 Monate</option>
+  </select>
+
+  <button type="submit" class="hinzufuegen-btn">➕ Hinzufügen</button>
+</form>
+
+<div id="vertraegeListe">
+  <h2>📋 Gespeicherte Verträge</h2>
+  <ul id="liste"></ul>
+  <div id="summenbereich"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyABCRMoZUrQtfABfwv1zf65jToV6IuOCoY",
+    authDomain: "vertragsapp.firebaseapp.com",
+    projectId: "vertragsapp",
+    storageBucket: "vertragsapp.firebasestorage.app",
+    messagingSenderId: "50405289863",
+    appId: "1:50405289863:web:237211c375a20b942bed22"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  db.enablePersistence().catch((err) => {
+    console.warn("⚠️ Offline-Modus konnte nicht aktiviert werden:", err.code);
+  });
+</script>
+<script src="script.js"></script>
+</body>
+</html>

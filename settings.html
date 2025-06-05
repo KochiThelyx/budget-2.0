@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>⚙️ Einstellungen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 1em;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+    }
+
+    h1 {
+      font-size: 22px;
+      text-align: center;
+      margin: 0 0 1.5em 0;
+    }
+
+    .zurueck-button {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      font-size: 22px;
+      background: none;
+      border: none;
+      color: #4a90e2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Mobile Mode Stil wie in index.html */
+    body.mobile-mode input,
+    body.mobile-mode select {
+      font-size: 32px;
+      padding: 0.4em 0.6em;
+      margin: 0.4em 0;
+    }
+
+    body.mobile-mode h1 {
+      font-size: 48px;
+    }
+
+    body.mobile-mode .zurueck-button {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="zurueck-button">🏠 Zur Startseite</a>
+  <h1>⚙️ Einstellungen</h1>
+
+  <!-- Hier kommen später deine  Einstellungen -->
+
+  <script>
+    // Aktiviere den Mobile-Modus
+    document.body.classList.add("mobile-mode");
+  </script>
+
+</body>
+</html>
