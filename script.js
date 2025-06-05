@@ -104,6 +104,41 @@ document.addEventListener("DOMContentLoaded", () => {
   "Reichtum ist relativ – Freiheit ist absolut.",
   "Ein solides Fundament besteht aus kleinen Entscheidungen – Tag für Tag."
 ];
+const nutzerDropdown = document.getElementById("nutzer");
+const neuerNutzerInput = document.getElementById("neuerNutzer");
+const btnAddUser = document.getElementById("btn-add-user");
+const btnDeleteUser = document.getElementById("btn-delete-user");
+
+let nutzerListe = JSON.parse(localStorage.getItem("nutzerListe")) || ["Philipp", "Franni", "Klopsmann"];
+
+function aktualisiereNutzerDropdown() {
+  nutzerDropdown.innerHTML = '<option value="">-- bitte wählen --</option>';
+  nutzerListe.forEach(n => {
+    const opt = document.createElement("option");
+    opt.value = n;
+    opt.textContent = n;
+    nutzerDropdown.appendChild(opt);
+  });
+}
+
+aktualisiereNutzerDropdown();
+
+btnAddUser.addEventListener("click", () => {
+  const name = neuerNutzerInput.value.trim();
+  if (!name || nutzerListe.includes(name)) return;
+  nutzerListe.push(name);
+  localStorage.setItem("nutzerListe", JSON.stringify(nutzerListe));
+  neuerNutzerInput.value = "";
+  aktualisiereNutzerDropdown();
+});
+
+nutzerDropdown.addEventListener("change", () => {
+  btnDeleteUser.disabled = !nutzerDropdown.value;
+  btnDeleteUser.textContent = nutzerDropdown.value
+    ? `🗑️ Benutzer „${nutzerDropdown.value}“ löschen`
+    : "🗑️ Benutzer löschen";
+});
+
 const zitatContainer = document.getElementById("zitat-des-tages");
   if (zitatContainer) {
     const zufall = Math.floor(Math.random() * zitate.length);
