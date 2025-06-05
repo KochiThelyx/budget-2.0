@@ -351,8 +351,9 @@ const zitatContainer = document.getElementById("zitat-des-tages");
         tbody.appendChild(row);
 
         const detail = document.createElement("tr");
+        detail.style.display = "none";
         detail.innerHTML = `
-          <td colspan="5" style="display:none; font-size: 0.9em; color: #444;">
+          <td colspan="5" style="font-size: 0.9em; color: #444;">
             Start: ${v.startdatum || "-"}<br>
             Laufzeit: ${v.laufzeit || "-"}<br>
             ${
@@ -365,8 +366,8 @@ const zitatContainer = document.getElementById("zitat-des-tages");
         tbody.appendChild(detail);
 
         row.addEventListener("click", () => {
-          detail.firstChild.style.display =
-            detail.firstChild.style.display === "none" ? "block" : "none";
+          detail.style.display =
+            detail.style.display === "none" ? "table-row" : "none";
         });
 
         row.querySelector(".btn-loeschen").addEventListener("click", async (e) => {
