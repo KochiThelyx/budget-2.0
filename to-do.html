@@ -42,10 +42,10 @@
     }
 
     #neue-aufgabe {
-      flex: 1;
-      padding: 0.5em;
-      font-size: 24px;
-    }
+  width: 200px; /* oder z. B. 220px, je nach Geschmack */
+  padding: 0.5em;
+  font-size: 24px;
+}
 
     #hinzufuegen-btn {
   width: 36px;
@@ -117,7 +117,7 @@
 
   <div class="todo-container">
     <div class="eingabezeile">
-      <input type="text" id="neue-aufgabe" placeholder="Neue Aufgabe eingeben..." />
+      <input type="text" id="neue-aufgabe" placeholder="Neue Aufgabe" />
       <button id="hinzufuegen-btn">➕</button>
     </div>
     <ul id="liste"></ul>
