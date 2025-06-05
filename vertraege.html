@@ -122,7 +122,7 @@
       color: #4a90e2;
       text-decoration: none;
       cursor: pointer;
-    }
+   
   </style>
 </head>
 <body>
@@ -131,13 +131,27 @@
 <h1>📄 Verträge</h1>
 
 <form>
-  <label for="nutzer">Benutzer:</label>
-  <select id="nutzer" name="nutzer" class="input-nutzer">
-    <option value="">-- bitte wählen --</option>
-    <option value="Philipp">Philipp</option>
-    <option value="Franni">Franni</option>
-    <option value="Klopsmann">Klopsmann</option>
-  </select>
+  <div style="display: flex; gap: 1em; align-items: flex-end;">
+  <div style="flex: 1;">
+    <label for="nutzer">Benutzer:</label>
+    <select id="nutzer" name="nutzer" class="input-nutzer">
+      <option value="">-- bitte wählen --</option>
+    </select>
+  </div>
+  <div style="flex: 1;">
+    <label for="neuerNutzer">Anlegen</label>
+    <input type="text" id="neuerNutzer" style="width: 100%;" placeholder="Name eingeben" />
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 0.8em;">
+    <button type="button" id="btn-add-user" style="padding: 0.6em; font-size: 18px;">➕</button>
+    
+  </div>
+  
+</div>
+  <button type="button" id="btn-delete-user" disabled
+  style="margin-top: 1em; background-color: #e74c3c; color: white; padding: 0.8em 1.2em; font-size: 20px; border: none; border-radius: 6px; width: 100%;">
+  🗑️ Benutzer löschen
+</button>
 
   <div class="form-row">
     <div class="form-col">
@@ -171,6 +185,7 @@
     <option value="12">12 Monate</option>
     <option value="24">24 Monate</option>
   </select>
+
 
   <button type="submit" class="hinzufuegen-btn">➕ Hinzufügen</button>
 </form>
