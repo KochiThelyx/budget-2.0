@@ -139,6 +139,36 @@ nutzerDropdown.addEventListener("change", () => {
     : "🗑️ Benutzer löschen";
 });
 
+btnDeleteUser.addEventListener("click", async () => {
+  const user = nutzerDropdown.value;
+  if (!user) return;
+  if (!confirm(`Benutzer „${user}“ und alle zugehörigen Verträge löschen?`)) {
+    return;
+  }
+
+  nutzerListe = nutzerListe.filter((n) => n !== user);
+  localStorage.setItem("nutzerListe", JSON.stringify(nutzerListe));
+
+  try {
+    const snapshot = await db.collection("vertraege").where("nutzer", "==", user).get();
+    const batch = db.batch();
+    snapshot.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  } catch (err) {
+    console.error("Fehler beim Löschen des Nutzers:", err);
+  }
+
+  if (localStorage.getItem("nutzer") === user) {
+    localStorage.removeItem("nutzer");
+  }
+
+  aktualisiereNutzerDropdown();
+  nutzerDropdown.value = "";
+  btnDeleteUser.disabled = true;
+  btnDeleteUser.textContent = "🗑️ Benutzer löschen";
+  ladeVertraege();
+});
+
 const zitatContainer = document.getElementById("zitat-des-tages");
   if (zitatContainer) {
     const zufall = Math.floor(Math.random() * zitate.length);
