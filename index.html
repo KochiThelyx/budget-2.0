@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Meine Vertragsübersicht</title>
+  <title>Knetenking Startseite</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#e6f2ff" />
   <style>
@@ -12,137 +13,38 @@
       background-color: #e6f2ff;
     }
 
-    .form-row {
-      display: flex;
-      gap: 1em;
-      margin-bottom: 1em;
-    }
-
-    .form-col {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .input-nutzer,
-    .input-laufzeit {
-      width: auto;
-      min-width: 100px;
-      box-sizing: border-box;
-      text-align: center;
-      -webkit-text-align-last: center;
-      -moz-text-align-last: center;
-      text-align-last: center;
-    }
-
-    .input-name,
-    .input-kosten,
-    .input-intervall,
-    .input-startdatum {
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    body.mobile-mode input,
-    body.mobile-mode select {
-      font-size: 36px;
-      padding: 0.4em 0.6em;
-      margin: 0.4em 0;
-    }
-
-    body.mobile-mode button.hinzufuegen-btn {
-      font-size: 18px;
-      padding: 0.5em 1em;
-      margin: 1em auto;
-      display: block;
-      width: auto;
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    body.mobile-mode button.hinzufuegen-btn:hover {
-      background-color: #357ABD;
-    }
-
-    label {
-      font-size: 30px;
-      font-weight: bold;
-    }
-
     h1 {
       font-size: 44px;
       margin-bottom: 1em;
       text-align: center;
     }
 
-    body.mobile-mode table.vertraege {
+    #start-banner {
+      background-color: #4a90e2;
+      color: white;
+      font-size: 48px;
+      font-weight: bold;
+      text-align: center;
+      padding: 1em;
       width: 100%;
-      margin: 0;
-      border-collapse: collapse;
-      font-size: 30px;
-      display: table;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
+      box-sizing: border-box;
     }
 
-    body.mobile-mode #liste {
-      padding: 0 !important;
-      margin: 0 !important;
+    #startseite {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 4em;
+      gap: 2em;
     }
 
-    table.vertraege th,
-    table.vertraege td {
-      padding: 0.6em 1em;
-      text-align: left;
+    #start-kacheln {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1em;
+      margin-top: 4em;
     }
-
-    table.vertraege tbody tr:nth-child(odd) {
-      background-color: #f8f8f8;
-    }
-
-    table.vertraege tbody tr:nth-child(even) {
-      background-color: #ffffff;
-    }
-
-    table.vertraege tbody tr:hover {
-      background-color: #eef;
-      cursor: pointer;
-    }
-	
-
-  
-  #startseite {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Statt center */
-  align-items: center;
-  min-height: 100vh;
-  padding-top: 4em; /* schiebt Kacheln von oben leicht runter */
-  gap: 2em;
-}
-
-#start-banner {
-  background-color: #4a90e2;
-  color: white;
-  font-size: 48px;
-  font-weight: bold;
-  text-align: center;
-  padding: 1em;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-   #start-kacheln {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1em;
-  margin-top: 4em;
-}
 
     .kachel {
       font-size: 36px;
@@ -153,139 +55,43 @@
       color: white;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      text-decoration: none;
+      width: 90%;
+      max-width: 250px;
+      text-align: center;
+      display: block;
+      margin: 0 auto;
     }
 
     .kachel:hover {
       background-color: #357ABD;
     }
 
-    #vertragsbereich {
-      display: none;
+    #zitat-des-tages {
+      margin-top: 3em;
+      margin-left: auto;
+      margin-right: auto;
+      font-size: 24px;
+      font-style: italic;
+      max-width: 600px;
+      text-align: center;
     }
-	
-	#zitat-des-tages {
-  margin-top: 3em;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 24px;
-  font-style: italic;
-  max-width: 600px;
-  text-align: center;
-}
   </style>
 </head>
 <body>
-<div id="start-banner">💰 Wo ist meine Knete ?</div>
-  <!-- STARTSEITE -->
+  <div id="start-banner">💰 Knetenking</div>
+
   <div id="startseite">
     <h1>Willkommen!</h1>
     <div id="start-kacheln">
-      <button class="kachel" id="btn-vertraege">📄 Verträge</button>
-      <button class="kachel">✅ To-Do Liste</button>
-      <button class="kachel">🛒 Einkaufsliste</button>
-      <button class="kachel">⚙️ Einstellungen</button>
+      <a href="vertraege.html" class="kachel">📄 Verträge</a>
+      <a href="to-do.html" class="kachel">✅️ To Do</a>
+      <a href="Einkaufsliste.html" class="kachel">🛒 Einkaufsliste</a>
+      <a href="settings.html" class="kachel">⚙️ Einstellungen</a>
     </div>
-	<div id="zitat-des-tages" style="margin-top: 3em; font-size: 24px; font-style: italic; max-width: 600px; text-align: center;"></div>
-  </div>
-  
-  
-
-  <!-- VERTRAGSBEREICH -->
-  <div id="vertragsbereich">
-  <div style="text-align: right; margin-bottom: 1em;">
-  <button id="btn-home" style="font-size: 24px; background: none; border: none; cursor: pointer;">🏠 Startseite</button>
-</div>
-    <h1>📄 Vertragsübersicht</h1>
-
-    <form>
-      <label for="nutzer">Benutzer:</label>
-      <select id="nutzer" name="nutzer" class="input-nutzer">
-        <option value="">-- bitte wählen --</option>
-        <option value="Philipp">Philipp</option>
-        <option value="Franni">Franni</option>
-        <option value="Klopsmann">Klopsmann</option>
-      </select>
-
-      <div class="form-row">
-        <div class="form-col">
-          <label for="name">Vertragsname:</label>
-          <input type="text" id="name" name="name" class="input-name" />
-        </div>
-        <div class="form-col">
-          <label for="kosten">Kosten (€):</label>
-          <input type="number" id="kosten" name="kosten" step="0.01" class="input-kosten" />
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-col">
-          <label for="intervall">Zahlungsintervall:</label>
-          <select id="intervall" name="intervall" class="input-intervall">
-            <option value="monatlich">monatlich</option>
-            <option value="halbjährlich">halbjährlich</option>
-            <option value="jährlich">jährlich</option>
-          </select>
-        </div>
-        <div class="form-col">
-          <label for="startdatum">Startdatum (dd.mm.yy):</label>
-          <input type="text" id="startdatum" name="startdatum" placeholder="z. B. 03.06.25" class="input-startdatum" />
-        </div>
-      </div>
-
-      <label for="laufzeit">Laufzeit:</label>
-      <select id="laufzeit" name="laufzeit" class="input-laufzeit">
-        <option value="monatlich">monatlich kündbar</option>
-        <option value="12">12 Monate</option>
-        <option value="24">24 Monate</option>
-      </select>
-
-      <button type="submit" class="hinzufuegen-btn">➕ Hinzufügen</button>
-    </form>
-
-    <div id="vertraegeListe">
-      <h2>📋 Gespeicherte Verträge</h2>
-      <ul id="liste"></ul>
-      <div id="summenbereich"></div>
-    </div>
+    <div id="zitat-des-tages"></div>
   </div>
 
-  <!-- Firebase & Skripte -->
-  <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore-compat.js"></script>
-  <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyABCRMoZUrQtfABfwv1zf65jToV6IuOCoY",
-    authDomain: "vertragsapp.firebaseapp.com",
-    projectId: "vertragsapp",
-    storageBucket: "vertragsapp.firebasestorage.app",
-    messagingSenderId: "50405289863",
-    appId: "1:50405289863:web:237211c375a20b942bed22"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  db.enablePersistence().catch((err) => {
-    console.warn("⚠️ Offline-Modus konnte nicht aktiviert werden:", err.code);
-  });
-
-  // Umschalten von Startseite zur Vertragsübersicht und zurück
-  document.addEventListener("DOMContentLoaded", () => {
-  
-	const btnVertraege = document.getElementById("btn-vertraege");
-    const btnHome = document.getElementById("btn-home");
-    const startseite = document.getElementById("startseite");
-    const vertragsbereich = document.getElementById("vertragsbereich");
-
-    btnVertraege.addEventListener("click", () => {
-      startseite.style.display = "none";
-      vertragsbereich.style.display = "block";
-    });
-
-    btnHome.addEventListener("click", () => {
-      vertragsbereich.style.display = "none";
-      startseite.style.display = "block";
-    });
-  });
-</script>
   <script src="script.js"></script>
 </body>
 </html>
