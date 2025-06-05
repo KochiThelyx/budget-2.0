@@ -331,8 +331,11 @@ const zitatContainer = document.getElementById("zitat-des-tages");
         });
       });
 
+      let rowIndex = 0;
       vertraege.forEach((v) => {
         const row = document.createElement("tr");
+        row.classList.add(rowIndex % 2 === 0 ? "row-even" : "row-odd");
+        rowIndex++;
         row.innerHTML = `
           <td>${v.name}</td>
           <td>${v.kosten.toFixed(2)} €</td>
