@@ -15,15 +15,15 @@
     }
 
     h1 {
-      font-size: 44px;
+      font-size: 20px;
       margin-bottom: 1em;
       text-align: center;
     }
 
     .form-row {
       display: flex;
-      gap: 1em;
-      margin-bottom: 1em;
+      gap: 0.5em;
+      margin-bottom: 0.3em;
     }
 
     .form-col {
@@ -42,18 +42,18 @@
     .input-kosten,
     .input-intervall,
     .input-startdatum {
-  width: 100%;
+  width: 85%;
   max-width: 200px;
 }
 
     label {
-      font-size: 26px;
+      font-size: 16px;
       font-weight: bold;
     }
 
     input,
     select {
-      font-size: 26px;
+      font-size: 16px;
       padding: 0.4em 0.6em;
       margin: 0.4em 0;
     }
@@ -77,7 +77,7 @@
     table.vertraege {
       width: 100%;
       border-collapse: collapse;
-      font-size: 20px;
+      font-size: 10px;
       margin-top: 1.5em;
     }
 
@@ -116,7 +116,7 @@
       position: absolute;
       top: 1em;
       right: 1em;
-      font-size: 22px;
+      font-size: 16px;
       background: none;
       border: none;
       color: #4a90e2;
@@ -133,24 +133,42 @@
 
 <form>
   <div style="display: flex; gap: 1em; align-items: flex-end;">
-  <div style="flex: 1;">
-    <label for="nutzer">Benutzer:</label>
-    <select id="nutzer" name="nutzer" class="input-nutzer">
-      <option value="">-- bitte wählen --</option>
-    </select>
-  </div>
-  <div style="flex: 1;">
-    <label for="neuerNutzer">Anlegen</label>
-    <input type="text" id="neuerNutzer" style="width: 100%;" placeholder="Name eingeben" />
-  </div>
-  <div style="display: flex; flex-direction: column; gap: 0.8em;">
-    <button type="button" id="btn-add-user" style="padding: 0.6em; font-size: 18px;">➕</button>
-    
+    <div style="flex: 1;">
+      <label for="nutzer">Benutzer:</label>
+      <select id="nutzer" name="nutzer" class="input-nutzer">
+        <option value="">-- bitte wählen --</option>
+      </select>
+    </div>
+    <div style="flex: 1;">
+      <label for="neuerNutzer">Anlegen:</label>
+      <div style="display: flex; align-items: center;">
+        <input type="text" id="neuerNutzer" style="width: 120px; font-size: 16px;" placeholder="Name eingeben" />
+        <button type="button" id="btn-add-user"
+          style="
+            width: 24px;
+    height: 24px;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #90ee90;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin-left: 0.5em;
+          ">
+          ✚
+        </button>
+      </div>
+    </div>
   </div>
   
 </div>
   <button type="button" id="btn-delete-user" disabled
-  style="margin-top: 1em; background-color: #e74c3c; color: white; padding: 0.8em 1.2em; font-size: 20px; border: none; border-radius: 6px; width: 100%;">
+  style="margin: 0.3em 0 0.3em 0; background-color: #e74c3c; color: white;
+         padding: 0.4em 0.8em; font-size: 14px; border: none;
+         border-radius: 6px; width: auto; display: inline-block;">
   🗑️ Benutzer löschen
 </button>
 
@@ -188,7 +206,7 @@
   </select>
 
 
-  <button type="submit" class="hinzufuegen-btn">➕ Hinzufügen</button>
+  <button type="submit" class="hinzufuegen-btn">➕ Vertrag hinzufügen</button>
 </form>
 
 <div id="vertraegeListe">
