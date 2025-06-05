@@ -42,27 +42,26 @@
     }
 
     #neue-aufgabe {
-  width: 200px; /* oder z. B. 220px, je nach Geschmack */
-  padding: 0.5em;
-  font-size: 24px;
-}
+      width: 200px;
+      padding: 0.5em;
+      font-size: 24px;
+    }
 
     #hinzufuegen-btn {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  font-size: 20px;
-  line-height: 1;
-  border-radius: 50%;
-  background-color: #90ee90;
-  color: black;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      font-size: 20px;
+      line-height: 1;
+      border-radius: 50%;
+      background-color: #90ee90;
+      color: black;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
     }
 
     ul#liste {
@@ -133,44 +132,64 @@
     const liste = document.getElementById("liste");
     const aufraeumenBtn = document.getElementById("aufraeumen");
 
-    function speichereListe() {
-      const daten = [];
-      liste.querySelectorAll("li").forEach(li => {
-        const text = li.textContent;
-        const erledigt = li.classList.contains("erledigt");
-        daten.push({ text, erledigt });
-      });
-      localStorage.setItem("einkaufsliste_daten", JSON.stringify(daten));
+    const dbName = "KnetenkingDB";
+    const storeName = "einkaufsliste";
+    let db;
+
+    const request = indexedDB.open(dbName, 1);
+
+    request.onupgradeneeded = function (event) {
+      db = event.target.result;
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+      }
+    };
+
+    request.onsuccess = function (event) {
+      db = event.target.result;
+      ladeListe();
+    };
+
+    request.onerror = function () {
+      alert("❌ IndexedDB konnte nicht geöffnet werden");
+    };
+
+    function erstelleEintrag(text, erledigt = false) {
+      const tx = db.transaction(storeName, "readwrite");
+      const store = tx.objectStore(storeName);
+      store.add({ text, erledigt });
+      tx.oncomplete = ladeListe;
     }
 
     function ladeListe() {
-      const gespeichert = localStorage.getItem("einkaufsliste_daten");
-      if (gespeichert) {
-        const daten = JSON.parse(gespeichert);
-        daten.forEach(eintrag => {
-          erstelleEintrag(eintrag.text, eintrag.erledigt);
+      liste.innerHTML = "";
+      const tx = db.transaction(storeName, "readonly");
+      const store = tx.objectStore(storeName);
+      const request = store.getAll();
+
+      request.onsuccess = function () {
+        const daten = request.result;
+        daten.forEach(item => {
+          const li = document.createElement("li");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = item.erledigt;
+          checkbox.style.marginRight = "1em";
+
+          if (item.erledigt) li.classList.add("erledigt");
+
+          checkbox.addEventListener("change", function () {
+            const txUpdate = db.transaction(storeName, "readwrite");
+            const updateStore = txUpdate.objectStore(storeName);
+            updateStore.put({ ...item, erledigt: checkbox.checked });
+            txUpdate.oncomplete = ladeListe;
+          });
+
+          li.appendChild(checkbox);
+          li.appendChild(document.createTextNode(item.text));
+          liste.appendChild(li);
         });
-      }
-    }
-
-    function erstelleEintrag(text, erledigt = false) {
-      const li = document.createElement("li");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.style.marginRight = "1em";
-      checkbox.checked = erledigt;
-
-      if (erledigt) li.classList.add("erledigt");
-
-      checkbox.addEventListener("change", function () {
-        li.classList.toggle("erledigt", checkbox.checked);
-        speichereListe();
-      });
-
-      li.appendChild(checkbox);
-      li.appendChild(document.createTextNode(text));
-      liste.appendChild(li);
-      speichereListe();
+      };
     }
 
     hinzufuegenBtn.addEventListener("click", function () {
@@ -182,12 +201,19 @@
     });
 
     aufraeumenBtn.addEventListener("click", function () {
-      const alle = liste.querySelectorAll("li.erledigt");
-      alle.forEach(li => li.remove());
-      speichereListe();
-    });
+      const tx = db.transaction(storeName, "readwrite");
+      const store = tx.objectStore(storeName);
+      const request = store.getAll();
 
-    ladeListe();
+      request.onsuccess = function () {
+        request.result.forEach(item => {
+          if (item.erledigt) {
+            store.delete(item.id);
+          }
+        });
+        tx.oncomplete = ladeListe;
+      };
+    });
   </script>
 
 </body>
