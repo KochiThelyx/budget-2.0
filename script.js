@@ -366,8 +366,10 @@ const zitatContainer = document.getElementById("zitat-des-tages");
         tbody.appendChild(detail);
 
         row.addEventListener("click", () => {
-          detail.style.display =
-            detail.style.display === "none" ? "table-row" : "none";
+          if (detail) {
+            detail.style.display =
+              detail.style.display === "none" ? "table-row" : "none";
+          }
         });
 
         row.querySelector(".btn-loeschen").addEventListener("click", async (e) => {
