@@ -29,6 +29,10 @@
       padding: 1em;
       width: 100%;
       box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
     }
 
     #startseite {
@@ -39,13 +43,7 @@
       gap: 2em;
     }
 
-    #header-with-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-    }
-
-    #header-with-logo #logo {
+    #start-banner #logo {
       width: 64px;
       height: 64px;
     }
@@ -91,13 +89,13 @@
   </style>
 </head>
 <body>
-  <div id="start-banner">💰 Knetenking</div>
+  <div id="start-banner">
+    <img id="logo" src="icon-192.png" alt="Knetenking Logo" />
+    <span>💰 Knetenking</span>
+  </div>
 
   <div id="startseite">
-    <div id="header-with-logo">
-      <img id="logo" src="icon-192.png" alt="Knetenking Logo" />
-      <h1>Willkommen!</h1>
-    </div>
+    <h1>Willkommen!</h1>
     <div id="start-kacheln">
       <a href="vertraege.html" class="kachel">📄 Verträge</a>
       <a href="to-do.html" class="kachel">✅️ To Do</a>
