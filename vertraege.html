@@ -215,23 +215,6 @@
   <div id="summenbereich"></div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyABCRMoZUrQtfABfwv1zf65jToV6IuOCoY",
-    authDomain: "vertragsapp.firebaseapp.com",
-    projectId: "vertragsapp",
-    storageBucket: "vertragsapp.firebasestorage.app",
-    messagingSenderId: "50405289863",
-    appId: "1:50405289863:web:237211c375a20b942bed22"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  db.enablePersistence().catch((err) => {
-    console.warn("⚠️ Offline-Modus konnte nicht aktiviert werden:", err.code);
-  });
-</script>
 <script src="script.js"></script>
 </body>
 </html>
