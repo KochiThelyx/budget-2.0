@@ -134,14 +134,18 @@
 
     const dbName = "KnetenkingDB";
     const storeName = "todo_liste";
+    const dbVersion = 2; // neue Version für zusätzliche ObjectStores
     let db;
 
-    const request = indexedDB.open(dbName, 1);
+    const request = indexedDB.open(dbName, dbVersion);
 
     request.onupgradeneeded = function (event) {
       db = event.target.result;
       if (!db.objectStoreNames.contains(storeName)) {
         db.createObjectStore(storeName, { keyPath: "id", autoIncrement: true });
+      }
+      if (!db.objectStoreNames.contains("einkaufsliste")) {
+        db.createObjectStore("einkaufsliste", { keyPath: "id", autoIncrement: true });
       }
     };
 
