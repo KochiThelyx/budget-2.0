@@ -374,11 +374,29 @@ const zitatContainer = document.getElementById("zitat-des-tages");
         if (v.intervall === "monatlich") summeMonatlich += parseFloat(v.kosten);
         else if (v.intervall === "halbjährlich") summeHalbjaehrlich += parseFloat(v.kosten);
         else if (v.intervall === "jährlich") summeJaehrlich += parseFloat(v.kosten);
+
         const row = document.createElement("tr");
         row.classList.add(rowIndex % 2 === 0 ? "row-even" : "row-odd");
         rowIndex++;
+
+        let highlight = false;
+        if ((v.laufzeit === "12" || v.laufzeit === "24") && v.ablaufdatum) {
+          const parts = v.ablaufdatum.split(".");
+          if (parts.length === 3) {
+            const d = parseInt(parts[0]);
+            const m = parseInt(parts[1]) - 1;
+            const y = parseInt("20" + parts[2]);
+            const endDate = new Date(y, m, d);
+            const diffDays = (endDate - new Date()) / (1000 * 60 * 60 * 24);
+            if (diffDays >= 0 && diffDays <= 90) highlight = true;
+          }
+        }
+
+        const nameDisplay = highlight ? `❗ ${v.name}` : v.name;
+
+        row.style.color = highlight ? "red" : "";
         row.innerHTML = `
-          <td>${v.name}</td>
+          <td>${nameDisplay}</td>
           <td>${v.kosten.toFixed(2)} €</td>
           <td>${v.intervall}</td>
           <td>${v.ablaufdatum || "-"}</td>
