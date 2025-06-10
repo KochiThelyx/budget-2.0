@@ -109,6 +109,29 @@ const neuerNutzerInput = document.getElementById("neuerNutzer");
 const btnAddUser = document.getElementById("btn-add-user");
 const btnDeleteUser = document.getElementById("btn-delete-user");
 
+// IndexedDB für Vertragsdaten initialisieren
+let db;
+const idbRequest = indexedDB.open("VertraegeDB", 1);
+
+idbRequest.onupgradeneeded = function (event) {
+  db = event.target.result;
+  if (!db.objectStoreNames.contains("vertraege")) {
+    const store = db.createObjectStore("vertraege", { keyPath: "id", autoIncrement: true });
+    store.createIndex("nutzer", "nutzer", { unique: false });
+  }
+};
+
+idbRequest.onsuccess = function (event) {
+  db = event.target.result;
+  if (document.querySelector("#vertraegeListe")) {
+    ladeVertraege();
+  }
+};
+
+idbRequest.onerror = function () {
+  console.error("IndexedDB konnte nicht geöffnet werden");
+};
+
 let nutzerListe = JSON.parse(localStorage.getItem("nutzerListe")) || ["Philipp", "Franni", "Klopsmann"];
 
 function aktualisiereNutzerDropdown() {
@@ -150,10 +173,20 @@ btnDeleteUser.addEventListener("click", async () => {
   localStorage.setItem("nutzerListe", JSON.stringify(nutzerListe));
 
   try {
-    const snapshot = await db.collection("vertraege").where("nutzer", "==", user).get();
-    const batch = db.batch();
-    snapshot.forEach((doc) => batch.delete(doc.ref));
-    await batch.commit();
+    const tx = db.transaction("vertraege", "readwrite");
+    const store = tx.objectStore("vertraege");
+    const index = store.index("nutzer");
+    index.openCursor(IDBKeyRange.only(user)).onsuccess = function (e) {
+      const cursor = e.target.result;
+      if (cursor) {
+        store.delete(cursor.primaryKey);
+        cursor.continue();
+      }
+    };
+    await new Promise((resolve, reject) => {
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
   } catch (err) {
     console.error("Fehler beim Löschen des Nutzers:", err);
   }
@@ -244,11 +277,17 @@ const zitatContainer = document.getElementById("zitat-des-tages");
     };
 
     try {
+      const tx = db.transaction("vertraege", "readwrite");
+      const store = tx.objectStore("vertraege");
       if (editModus && editID) {
-        await db.collection("vertraege").doc(editID).set(vertrag);
+        store.put({ ...vertrag, id: editID });
       } else {
-        await db.collection("vertraege").add(vertrag);
+        store.add(vertrag);
       }
+      await new Promise((resolve, reject) => {
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
       form.reset();
       speichernButton.textContent = "✚ Hinzufügen";
       editModus = false;
@@ -272,16 +311,15 @@ const zitatContainer = document.getElementById("zitat-des-tages");
     let summeJaehrlich = 0;
 
     try {
-      const snapshot = await db.collection("vertraege").get();
-      if (snapshot.empty) return;
-
-      const vertraege = [];
-
-      snapshot.forEach((doc) => {
-        const v = doc.data();
-        if (v.nutzer !== nutzer) return;
-        vertraege.push({ id: doc.id, ...v });
+      const tx = db.transaction("vertraege", "readonly");
+      const store = tx.objectStore("vertraege");
+      const index = store.index("nutzer");
+      const vertraege = await new Promise((resolve, reject) => {
+        const req = index.getAll(IDBKeyRange.only(nutzer));
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
       });
+      if (!vertraege.length) return;
 
       vertraege.sort((a, b) => {
         const feld = aktuelleSortierung.spalte;
@@ -333,6 +371,9 @@ const zitatContainer = document.getElementById("zitat-des-tages");
 
       let rowIndex = 0;
       vertraege.forEach((v) => {
+        if (v.intervall === "monatlich") summeMonatlich += parseFloat(v.kosten);
+        else if (v.intervall === "halbjährlich") summeHalbjaehrlich += parseFloat(v.kosten);
+        else if (v.intervall === "jährlich") summeJaehrlich += parseFloat(v.kosten);
         const row = document.createElement("tr");
         row.classList.add(rowIndex % 2 === 0 ? "row-even" : "row-odd");
         rowIndex++;
@@ -374,8 +415,13 @@ const zitatContainer = document.getElementById("zitat-des-tages");
 
         row.querySelector(".btn-loeschen").addEventListener("click", async (e) => {
           e.stopPropagation();
-          const id = e.target.getAttribute("data-id");
-          await db.collection("vertraege").doc(id).delete();
+          const id = parseInt(e.target.getAttribute("data-id"));
+          const txDel = db.transaction("vertraege", "readwrite");
+          txDel.objectStore("vertraege").delete(id);
+          await new Promise((resolve, reject) => {
+            txDel.oncomplete = resolve;
+            txDel.onerror = () => reject(txDel.error);
+          });
           ladeVertraege();
         });
 
@@ -436,5 +482,5 @@ const zitatContainer = document.getElementById("zitat-des-tages");
     return `${format(start)} – ${format(ende)}`;
   }
 
-  ladeVertraege();
+  // ladeVertraege wird nach erfolgreichem Öffnen der Datenbank aufgerufen
 });
