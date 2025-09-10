@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>📚 Artikel des Tages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#e6f2ff" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <style>
+    body {
+      margin: 1em;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+    }
+
+    h1 {
+      font-size: 22px;
+      text-align: center;
+      margin: 0 0 1.5em 0;
+    }
+
+    .zurueck-button {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      font-size: 22px;
+      background: none;
+      border: none;
+      color: #4a90e2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #artikel-container {
+      font-size: 18px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="zurueck-button">🏠 Zur Startseite</a>
+  <h1>📚 Artikel des Tages</h1>
+  <div id="artikel-container">Lade Artikel des Tages...</div>
+
+  <script>
+    document.body.classList.add("mobile-mode");
+
+    async function ladeArtikelDesTages() {
+      const heute = new Date();
+      const jahr = heute.getFullYear();
+      const monat = String(heute.getMonth() + 1).padStart(2, "0");
+      const tag = String(heute.getDate()).padStart(2, "0");
+      const url = `https://de.wikipedia.org/api/rest_v1/feed/featured/${jahr}/${monat}/${tag}`;
+
+      try {
+        const res = await fetch(url, {
+          headers: { "Api-User-Agent": "BudgetApp/1.0 (https://example.com)" }
+        });
+        const data = await res.json();
+        const artikel = data?.tfa;
+
+        const container = document.getElementById("artikel-container");
+        if (artikel) {
+          container.innerHTML = `
+            <h2>${artikel.titles.display}</h2>
+            <p>${artikel.extract}</p>
+            <p><a href="${artikel.content_urls.desktop.page}" target="_blank">Weiterlesen auf Wikipedia</a></p>
+          `;
+        } else {
+          container.textContent = "Kein Artikel gefunden.";
+        }
+      } catch (e) {
+        document.getElementById("artikel-container").textContent = "Fehler beim Laden.";
+      }
+    }
+
+    ladeArtikelDesTages();
+  </script>
+  <script src="sw-register.js"></script>
+</body>
+</html>
+
