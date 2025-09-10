@@ -102,8 +102,15 @@ document.addEventListener("DOMContentLoaded", () => {
   "Es ist einfacher, mehr aus weniger zu machen, als mehr zu brauchen.",
   "Frugalität ist kein Verzicht, sondern Weitsicht.",
   "Reichtum ist relativ – Freiheit ist absolut.",
-  "Ein solides Fundament besteht aus kleinen Entscheidungen – Tag für Tag."
+"Ein solides Fundament besteht aus kleinen Entscheidungen – Tag für Tag."
 ];
+
+const zitatContainer = document.getElementById("zitat-des-tages");
+if (zitatContainer) {
+  const zufall = Math.floor(Math.random() * zitate.length);
+  zitatContainer.textContent = `💬 „${zitate[zufall]}“`;
+}
+
 const nutzerDropdown = document.getElementById("nutzer");
 const neuerNutzerInput = document.getElementById("neuerNutzer");
 const btnAddUser = document.getElementById("btn-add-user");
@@ -202,12 +209,7 @@ btnDeleteUser.addEventListener("click", async () => {
   ladeVertraege();
 });
 
-const zitatContainer = document.getElementById("zitat-des-tages");
-  if (zitatContainer) {
-    const zufall = Math.floor(Math.random() * zitate.length);
-    zitatContainer.textContent = `💬 „${zitate[zufall]}“`;
-  }
-  const form = document.querySelector("form");
+const form = document.querySelector("form");
   const nutzerInput = document.querySelector("#nutzer");
   const nameInput = document.querySelector("#name");
   const kostenInput = document.querySelector("#kosten");
