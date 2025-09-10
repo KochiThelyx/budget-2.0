@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>🖼️ Bild des Tages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#e6f2ff" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <style>
+    body {
+      margin: 1em;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 22px;
+      text-align: center;
+      margin: 0 0 1.5em 0;
+    }
+
+    .zurueck-button {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      font-size: 22px;
+      background: none;
+      border: none;
+      color: #4a90e2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="zurueck-button">🏠 Zur Startseite</a>
+  <h1>🖼️ Bild des Tages</h1>
+  <div id="bild-container">Lade Bild des Tages...</div>
+
+  <script>
+    document.body.classList.add("mobile-mode");
+
+    async function ladeBildDesTages() {
+      const heute = new Date();
+      const jahr = heute.getFullYear();
+      const monat = String(heute.getMonth() + 1).padStart(2, "0");
+      const tag = String(heute.getDate()).padStart(2, "0");
+      const url = `https://de.wikipedia.org/api/rest_v1/feed/featured/${jahr}/${monat}/${tag}`;
+
+      try {
+        const res = await fetch(url, {
+          headers: { "Api-User-Agent": "BudgetApp/1.0 (https://example.com)" }
+        });
+        const data = await res.json();
+        const bild = data?.image?.image;
+
+        const container = document.getElementById("bild-container");
+        if (bild && bild.source) {
+          const img = document.createElement("img");
+          img.src = bild.source;
+          img.alt = bild.title || "Bild des Tages";
+          container.innerHTML = "";
+          container.appendChild(img);
+          if (bild.description) {
+            const p = document.createElement("p");
+            p.textContent = bild.description.text || "";
+            container.appendChild(p);
+          }
+        } else {
+          container.textContent = "Kein Bild gefunden.";
+        }
+      } catch (e) {
+        document.getElementById("bild-container").textContent = "Fehler beim Laden.";
+      }
+    }
+
+    ladeBildDesTages();
+  </script>
+  <script src="sw-register.js"></script>
+</body>
+</html>
+
