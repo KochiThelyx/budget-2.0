@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎬 Movie-Releases</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#e6f2ff" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <style>
+    body {
+      margin: 1em;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #e6f2ff;
+    }
+
+    h1 {
+      font-size: 22px;
+      text-align: center;
+      margin: 2em 0 1.5em 0;
+    }
+
+    .zurueck-button {
+      position: absolute;
+      top: 1em;
+      right: 1em;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #4a90e2;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="zurueck-button" aria-label="Zur Startseite">🏠</a>
+  <h1>🎬 Movie-Releases</h1>
+  <div id="movie-container">Lade Movie-Releases...</div>
+
+  <script>
+    document.body.classList.add("mobile-mode");
+
+    async function ladeMovieReleases() {
+      const apiKey = ""; // TMDb API key erforderlich
+      const url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=de-DE&page=1`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        const list = (data.results || []).map(f => `<li>${f.title} (${f.release_date})</li>`).join("");
+        document.getElementById("movie-container").innerHTML = `<ul>${list}</ul>`;
+      } catch (e) {
+        document.getElementById("movie-container").textContent = "Fehler beim Laden.";
+      }
+    }
+
+    ladeMovieReleases();
+  </script>
+  <script src="sw-register.js"></script>
+</body>
+</html>
