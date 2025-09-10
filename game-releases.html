@@ -52,20 +52,28 @@
   <script>
     document.body.classList.add("mobile-mode");
 
-    async function ladeGameReleases() {
-      const apiKey = ""; // optional: RAWG API key
-      const url = `https://api.rawg.io/api/games?ordering=-released&page_size=10${apiKey ? `&key=${apiKey}` : ""}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const list = (data.results || []).map(g => `<li>${g.name} (${g.released})</li>`).join("");
-        document.getElementById("game-container").innerHTML = `<ul>${list}</ul>`;
-      } catch (e) {
-        document.getElementById("game-container").textContent = "Fehler beim Laden.";
-      }
-    }
+    const apiKey = "YOUR_RAWG_API_KEY"; // Ersetze durch deinen RAWG API-Key
+    const today = new Date();
+    const endDate = new Date();
+    endDate.setFullYear(endDate.getFullYear() + 1);
+    const start = today.toISOString().split("T")[0];
+    const end = endDate.toISOString().split("T")[0];
+    const url =
+      `https://api.rawg.io/api/games?key=${apiKey}&dates=${start},${end}&ordering=released&page_size=10`;
 
-    ladeGameReleases();
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        const list = (data.results || [])
+          .map((g) => `<li>${g.name} (${g.released || "TBA"})</li>`)
+          .join("");
+        document.getElementById("game-container").innerHTML = `<ul>${list}</ul>`;
+      })
+      .catch((err) => {
+        console.error(err);
+        document.getElementById("game-container").textContent =
+          "Fehler beim Laden der Game-Releases.";
+      });
   </script>
   <script src="sw-register.js"></script>
 </body>

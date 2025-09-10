@@ -52,20 +52,24 @@
   <script>
     document.body.classList.add("mobile-mode");
 
-    async function ladeMovieReleases() {
-      const apiKey = ""; // TMDb API key erforderlich
-      const url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=de-DE&page=1`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const list = (data.results || []).map(f => `<li>${f.title} (${f.release_date})</li>`).join("");
-        document.getElementById("movie-container").innerHTML = `<ul>${list}</ul>`;
-      } catch (e) {
-        document.getElementById("movie-container").textContent = "Fehler beim Laden.";
-      }
-    }
+    const apiKey = "YOUR_TMDB_API_KEY"; // Ersetze durch deinen TMDb API-Key
+    const url =
+      `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=de-DE&region=DE&page=1`;
 
-    ladeMovieReleases();
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        const list = (data.results || [])
+          .slice(0, 10)
+          .map((m) => `<li>${m.title} (${m.release_date})</li>`)
+          .join("");
+        document.getElementById("movie-container").innerHTML = `<ul>${list}</ul>`;
+      })
+      .catch((err) => {
+        console.error(err);
+        document.getElementById("movie-container").textContent =
+          "Fehler beim Laden der Movie-Releases.";
+      });
   </script>
   <script src="sw-register.js"></script>
 </body>
