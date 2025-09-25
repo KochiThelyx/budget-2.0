@@ -1,74 +1,151 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Knetenking Startseite</title>
+  <title>Knetenking Jubiläum 💖</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-192.png" />
-  <meta name="theme-color" content="#e6f2ff" />
+  <meta name="theme-color" content="#ff6fa5" />
   <style>
+    :root {
+      --romance-bg: #ffe6f2;
+      --romance-overlay: rgba(255, 255, 255, 0.75);
+      --romance-accent: #ff4d88;
+      --romance-accent-dark: #d93672;
+      --romance-soft: #ffc1dc;
+      --romance-text: #661b35;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
-      margin: 1em;
-      background-color: #e6f2ff;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      margin: 0;
+      padding: 1.5em;
+      color: var(--romance-text);
+      background-color: var(--romance-bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'%3E%3Cpath fill='%23ff8fb7' fill-opacity='0.35' d='M23.6 2c-2.7 0-5.1 1.6-6.7 4-1.6-2.4-4-4-6.7-4C5.4 2 2 5.4 2 9.8c0 6.3 6.5 11 14.9 18.6 8.4-7.6 14.9-12.3 14.9-18.6C31.8 5.4 28.4 2 23.6 2z'/%3E%3C/svg%3E");
     }
 
     h1 {
       font-size: 44px;
-      margin-bottom: 1em;
+      margin: 0 0 1em 0;
       text-align: center;
+      text-shadow: 0 2px 6px rgba(255, 105, 180, 0.4);
+    }
+
+    h1::before,
+    h1::after {
+      content: "💕";
+      margin: 0 0.2em;
     }
 
     #start-banner {
-      background-color: #4a90e2;
-      color: white;
+      background: linear-gradient(135deg, rgba(255, 105, 180, 0.95), rgba(255, 77, 136, 0.95));
+      color: #fff;
       font-size: 48px;
       font-weight: bold;
       text-align: center;
       padding: 1em;
       width: 100%;
-      box-sizing: border-box;
+      border-radius: 32px;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 0.5em;
+      box-shadow: 0 12px 30px rgba(255, 77, 136, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #start-banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'%3E%3Cpath fill='white' fill-opacity='0.15' d='M23.6 2c-2.7 0-5.1 1.6-6.7 4-1.6-2.4-4-4-6.7-4C5.4 2 2 5.4 2 9.8c0 6.3 6.5 11 14.9 18.6 8.4-7.6 14.9-12.3 14.9-18.6C31.8 5.4 28.4 2 23.6 2z'/%3E%3C/svg%3E");
+      background-size: 90px 90px;
+      opacity: 0.6;
+    }
+
+    #start-banner span {
+      position: relative;
+      z-index: 1;
+    }
+
+    #start-banner #logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      border: 3px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 6px 15px rgba(255, 255, 255, 0.35);
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 0.2em;
     }
 
     #startseite {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 4em;
-      gap: 1em;
+      gap: 1.2em;
       width: 100%;
-      max-width: 360px;
-      margin: 0 auto;
+      max-width: 420px;
+      margin: 4em auto 0;
       text-align: center;
+      padding: 2em 1.5em 2.5em;
+      background: var(--romance-overlay);
+      border-radius: 32px;
+      box-shadow: 0 18px 40px rgba(255, 77, 136, 0.18);
+      backdrop-filter: blur(4px);
+      position: relative;
     }
 
-    #start-banner #logo {
-      width: 64px;
-      height: 64px;
+    #startseite::before,
+    #startseite::after {
+      content: "❣️";
+      position: absolute;
+      font-size: 32px;
+      opacity: 0.4;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    #startseite::before {
+      top: 12px;
+      left: 22px;
+      animation-delay: -2s;
+    }
+
+    #startseite::after {
+      bottom: 18px;
+      right: 24px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
     #start-kacheln {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1em;
+      gap: 0.8em;
       margin-top: 1em;
+      width: 100%;
     }
 
     .kachel {
-      font-size: 32px;
+      font-size: 30px;
       padding: 0.8em 1.2em;
-      border-radius: 24px;
+      border-radius: 28px;
       border: none;
-      background-color: #4a90e2;
+      background: linear-gradient(135deg, var(--romance-accent), var(--romance-accent-dark));
       color: white;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       text-decoration: none;
       width: 100%;
       max-width: 360px;
@@ -76,31 +153,47 @@
       display: block;
       margin: 0 auto;
       white-space: nowrap;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(255, 77, 136, 0.25);
+    }
+
+    .kachel::after {
+      content: " ❤";
     }
 
     .kachel:hover {
-      background-color: #357ABD;
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 16px 30px rgba(217, 54, 114, 0.35);
     }
 
     #zitat-des-tages {
-      margin-top: 3em;
+      margin-top: 2.5em;
       margin-left: auto;
       margin-right: auto;
       font-size: 24px;
       font-style: italic;
       max-width: 360px;
       text-align: center;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 1.2em 1em;
+      border-radius: 24px;
+      box-shadow: inset 0 0 0 3px var(--romance-soft);
+      line-height: 1.4;
+    }
+
+    #zitat-des-tages::before {
+      content: "💌 ";
     }
   </style>
 </head>
 <body>
   <div id="start-banner">
     <img id="logo" src="icon-192.png" alt="Knetenking Logo" />
-    <span>Knetenking</span>
+    <span>Knetenking Jubiläum</span>
   </div>
 
   <div id="startseite">
-    <h1>Willkommen!</h1>
+    <h1>Willkommen, Liebes-Team!</h1>
     <div id="start-kacheln">
       <a href="vertraege.html" class="kachel">📄 Verträge</a>
       <a href="to-do.html" class="kachel">✅️ To Do</a>

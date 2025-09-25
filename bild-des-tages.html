@@ -2,48 +2,103 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>🖼️ Bild des Tages</title>
+  <title>🖼️ Bild des Tages – Herzensedition</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#e6f2ff" />
+  <meta name="theme-color" content="#ff6fa5" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-192.png" />
   <style>
-    body {
-      margin: 1em;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #e6f2ff;
-      text-align: center;
+    :root {
+      --romance-bg: #ffe6f2;
+      --romance-overlay: rgba(255, 255, 255, 0.85);
+      --romance-accent: #ff4d88;
+      --romance-soft: #ffc1dc;
+      --romance-text: #65132d;
     }
 
-    h1 {
-      font-size: 22px;
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 1.8em;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background-color: var(--romance-bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'%3E%3Cpath fill='%23ff8fb7' fill-opacity='0.22' d='M23.6 2c-2.7 0-5.1 1.6-6.7 4-1.6-2.4-4-4-6.7-4C5.4 2 2 5.4 2 9.8c0 6.3 6.5 11 14.9 18.6 8.4-7.6 14.9-12.3 14.9-18.6C31.8 5.4 28.4 2 23.6 2z'/%3E%3C/svg%3E");
+      color: var(--romance-text);
       text-align: center;
-      margin: 2em 0 1.5em 0;
     }
 
     .zurueck-button {
       position: absolute;
-      top: 1em;
-      right: 1em;
+      top: 1.2em;
+      right: 1.5em;
       font-size: 24px;
-      background: none;
-      border: none;
-      color: #4a90e2;
       text-decoration: none;
-      cursor: pointer;
+      color: var(--romance-accent);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.4em 0.8em;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(255, 77, 136, 0.25);
     }
 
-    img {
+    h1 {
+      font-size: 32px;
+      margin: 1.5em 0 1em 0;
+      text-shadow: 0 2px 6px rgba(255, 77, 136, 0.35);
+    }
+
+    h1::before,
+    h1::after {
+      content: "💗";
+      margin: 0 0.3em;
+    }
+
+    #bild-container {
+      margin: 0 auto;
+      max-width: 720px;
+      padding: 2em 1.5em;
+      background: var(--romance-overlay);
+      border-radius: 28px;
+      box-shadow: 0 18px 40px rgba(255, 77, 136, 0.18);
+    }
+
+    #bild-container::before,
+    #bild-container::after {
+      content: "🌹";
+      display: block;
+      font-size: 30px;
+      opacity: 0.45;
+    }
+
+    #bild-container::before {
+      margin-bottom: 0.6em;
+    }
+
+    #bild-container::after {
+      margin-top: 0.6em;
+    }
+
+    #bild-container img {
       max-width: 100%;
       height: auto;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(255, 77, 136, 0.25);
+      border: 4px solid var(--romance-soft);
+    }
+
+    #bild-container p {
+      margin-top: 1em;
+      font-size: 18px;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
-  <a href="index.html" class="zurueck-button" aria-label="Zur Startseite">🏠</a>
-  <h1>🖼️ Bild des Tages</h1>
-  <div id="bild-container">Lade Bild des Tages...</div>
+  <a href="index.html" class="zurueck-button" aria-label="Zur Startseite">🏠💕</a>
+  <h1>Bild des Tages voller Liebe</h1>
+  <div id="bild-container">Lade ein herzerwärmendes Kunstwerk...</div>
 
   <script>
     document.body.classList.add("mobile-mode");
@@ -75,10 +130,10 @@
             container.appendChild(p);
           }
         } else {
-          container.textContent = "Kein Bild gefunden.";
+          container.textContent = "Kein romantisches Bild gefunden.";
         }
       } catch (e) {
-        document.getElementById("bild-container").textContent = "Fehler beim Laden.";
+        document.getElementById("bild-container").textContent = "Fehler beim Laden des Liebesbildes.";
       }
     }
 
@@ -87,4 +142,3 @@
   <script src="sw-register.js"></script>
 </body>
 </html>
-
