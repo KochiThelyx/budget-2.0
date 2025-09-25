@@ -84,7 +84,8 @@
       karte.className = "bild-karte";
 
       const bild = document.createElement("img");
-      bild.src = "https://knetenking.kochithelyx.de/potd/potd.jpg";
+      const cacheBuster = Date.now();
+      bild.src = `https://knetenking.kochithelyx.de/potd/potd.jpg?cb=${cacheBuster}`;
       bild.alt = "Bild des Tages von knetenking";
       bild.loading = "lazy";
       karte.appendChild(bild);
