@@ -2,66 +2,106 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>⚙️ Einstellungen</title>
+  <title>⚙️ Einstellungen – Herzmodus</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#e6f2ff" />
+  <meta name="theme-color" content="#ff6fa5" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-192.png" />
   <style>
-    body {
-      margin: 1em;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #e6f2ff;
+    :root {
+      --romance-bg: #ffe6f2;
+      --romance-overlay: rgba(255, 255, 255, 0.9);
+      --romance-accent: #ff4d88;
+      --romance-soft: #ffc1dc;
+      --romance-text: #65132d;
     }
 
-    h1 {
-      font-size: 22px;
-      text-align: center;
-      margin: 0 0 1.5em 0;
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 1.5em;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background-color: var(--romance-bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 32 32'%3E%3Cpath fill='%23ff8fb7' fill-opacity='0.24' d='M23.6 2c-2.7 0-5.1 1.6-6.7 4-1.6-2.4-4-4-6.7-4C5.4 2 2 5.4 2 9.8c0 6.3 6.5 11 14.9 18.6 8.4-7.6 14.9-12.3 14.9-18.6C31.8 5.4 28.4 2 23.6 2z'/%3E%3C/svg%3E");
+      color: var(--romance-text);
     }
 
     .zurueck-button {
       position: absolute;
-      top: 1em;
-      right: 1em;
+      top: 1.2em;
+      right: 1.5em;
       font-size: 22px;
-      background: none;
-      border: none;
-      color: #4a90e2;
       text-decoration: none;
-      cursor: pointer;
+      color: var(--romance-accent);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 0.4em 0.8em;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(255, 77, 136, 0.25);
     }
 
-    /* Mobile Mode Stil wie in index.html */
-    body.mobile-mode input,
-    body.mobile-mode select {
+    h1 {
       font-size: 32px;
-      padding: 0.4em 0.6em;
-      margin: 0.4em 0;
+      text-align: center;
+      margin: 1.8em 0 1.2em 0;
+      text-shadow: 0 2px 6px rgba(255, 77, 136, 0.35);
     }
 
-    body.mobile-mode h1 {
-      font-size: 24px;
+    h1::before,
+    h1::after {
+      content: "⚙️💕";
+      margin: 0 0.2em;
     }
 
-    body.mobile-mode .zurueck-button {
-      font-size: 14px;
+    .settings-container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2em 2.2em;
+      background: var(--romance-overlay);
+      border-radius: 28px;
+      box-shadow: 0 18px 40px rgba(255, 77, 136, 0.18);
+      position: relative;
+    }
+
+    .settings-container::before,
+    .settings-container::after {
+      content: "💞";
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.35;
+    }
+
+    .settings-container::before {
+      top: 18px;
+      left: 24px;
+    }
+
+    .settings-container::after {
+      bottom: 18px;
+      right: 24px;
+    }
+
+    .placeholder {
+      text-align: center;
+      font-size: 20px;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
 
-  <a href="index.html" class="zurueck-button">🏠 Zur Startseite</a>
-  <h1>⚙️ Einstellungen</h1>
+  <a href="index.html" class="zurueck-button">🏠 Zurück zur Liebe</a>
+  <h1>Einstellungen mit Herz</h1>
 
-  <!-- Hier kommen später deine  Einstellungen -->
+  <div class="settings-container">
+    <p class="placeholder">Hier kannst du bald all deine romantischen Einstellungen verwalten. 💘</p>
+  </div>
 
   <script>
-    // Aktiviere den Mobile-Modus
     document.body.classList.add("mobile-mode");
-    </script>
-    <script src="sw-register.js"></script>
-
-  </body>
+  </script>
+  <script src="sw-register.js"></script>
+</body>
 </html>

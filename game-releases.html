@@ -2,52 +2,117 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>🎮 Game-Releases</title>
+  <title>🎮 Game-Releases – Cupid Edition</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#e6f2ff" />
+  <meta name="theme-color" content="#ff6fa5" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-192.png" />
   <style>
-    body {
-      margin: 1em;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #e6f2ff;
+    :root {
+      --romance-bg: #ffe6f2;
+      --romance-overlay: rgba(255, 255, 255, 0.9);
+      --romance-accent: #ff4d88;
+      --romance-soft: #ffc1dc;
+      --romance-text: #65132d;
     }
 
-    h1 {
-      font-size: 22px;
-      text-align: center;
-      margin: 2em 0 1.5em 0;
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 1.5em;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background-color: var(--romance-bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110' viewBox='0 0 32 32'%3E%3Cpath fill='%23ff8fb7' fill-opacity='0.24' d='M23.6 2c-2.7 0-5.1 1.6-6.7 4-1.6-2.4-4-4-6.7-4C5.4 2 2 5.4 2 9.8c0 6.3 6.5 11 14.9 18.6 8.4-7.6 14.9-12.3 14.9-18.6C31.8 5.4 28.4 2 23.6 2z'/%3E%3C/svg%3E");
+      color: var(--romance-text);
     }
 
     .zurueck-button {
       position: absolute;
-      top: 1em;
-      right: 1em;
+      top: 1.2em;
+      right: 1.5em;
       font-size: 24px;
-      background: none;
-      border: none;
-      color: #4a90e2;
       text-decoration: none;
-      cursor: pointer;
+      color: var(--romance-accent);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 0.4em 0.8em;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(255, 77, 136, 0.25);
+    }
+
+    h1 {
+      font-size: 32px;
+      text-align: center;
+      margin: 1.8em 0 1em 0;
+      text-shadow: 0 2px 6px rgba(255, 77, 136, 0.35);
+    }
+
+    h1::before,
+    h1::after {
+      content: "🎮💕";
+      margin: 0 0.2em;
+    }
+
+    #game-container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--romance-overlay);
+      border-radius: 28px;
+      box-shadow: 0 18px 40px rgba(255, 77, 136, 0.2);
+      padding: 2em 2.5em;
+      position: relative;
+    }
+
+    #game-container::before,
+    #game-container::after {
+      content: "💘";
+      position: absolute;
+      font-size: 28px;
+      opacity: 0.35;
+    }
+
+    #game-container::before {
+      top: 18px;
+      left: 24px;
+    }
+
+    #game-container::after {
+      bottom: 18px;
+      right: 24px;
     }
 
     ul {
       list-style: none;
       padding: 0;
+      margin: 0;
       font-size: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6em;
     }
 
     li {
-      margin-bottom: 0.5em;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 0.8em 1em;
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(255, 77, 136, 0.18);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    li::after {
+      content: "💞";
+      margin-left: 1em;
     }
   </style>
 </head>
 <body>
-  <a href="index.html" class="zurueck-button" aria-label="Zur Startseite">🏠</a>
-  <h1>🎮 Game-Releases</h1>
-  <div id="game-container">Lade Game-Releases...</div>
+  <a href="index.html" class="zurueck-button" aria-label="Zur Startseite">🏠💟</a>
+  <h1>Verliebte Game-Releases</h1>
+  <div id="game-container">Lade Game-Releases voller Herzklopfen...</div>
 
   <script>
     document.body.classList.add("mobile-mode");
@@ -65,14 +130,14 @@
       .then((r) => r.json())
       .then((data) => {
         const list = (data.results || [])
-          .map((g) => `<li>${g.name} (${g.released || "TBA"})</li>`)
+          .map((g) => `<li><span>${g.name}</span><span>${g.released || "TBA"}</span></li>`)
           .join("");
         document.getElementById("game-container").innerHTML = `<ul>${list}</ul>`;
       })
       .catch((err) => {
         console.error(err);
         document.getElementById("game-container").textContent =
-          "Fehler beim Laden der Game-Releases.";
+          "Fehler beim Laden der Game-Releases voller Liebe.";
       });
   </script>
   <script src="sw-register.js"></script>

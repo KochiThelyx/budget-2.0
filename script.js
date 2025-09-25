@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const zitatContainer = document.getElementById("zitat-des-tages");
 if (zitatContainer) {
   const zufall = Math.floor(Math.random() * zitate.length);
-  zitatContainer.textContent = `💬 „${zitate[zufall]}“`;
+  zitatContainer.textContent = `💌 „${zitate[zufall]}“ 💖`;
 }
 
 const nutzerDropdown = document.getElementById("nutzer");
@@ -82,8 +82,8 @@ btnAddUser.addEventListener("click", () => {
 nutzerDropdown.addEventListener("change", () => {
   btnDeleteUser.disabled = !nutzerDropdown.value;
   btnDeleteUser.textContent = nutzerDropdown.value
-    ? `🗑️ Benutzer „${nutzerDropdown.value}“ löschen`
-    : "🗑️ Benutzer löschen";
+    ? `🗑️💔 „${nutzerDropdown.value}“ verabschieden`
+    : "🗑️💔 Nutzer löschen";
 });
 
 btnDeleteUser.addEventListener("click", async () => {
@@ -122,7 +122,7 @@ btnDeleteUser.addEventListener("click", async () => {
   aktualisiereNutzerDropdown();
   nutzerDropdown.value = "";
   btnDeleteUser.disabled = true;
-  btnDeleteUser.textContent = "🗑️ Benutzer löschen";
+  btnDeleteUser.textContent = "🗑️💔 Nutzer löschen";
   ladeVertraege();
 });
 
@@ -165,7 +165,7 @@ const form = document.querySelector("form");
     const laufzeit = laufzeitInput.value;
 
     if (!nutzer || !name || isNaN(kosten)) {
-      alert("Bitte gültige Vertragsdaten eingeben.");
+      alert("💔 Bitte gültige Vertragsdaten eingeben.");
       return;
     }
 
@@ -215,7 +215,7 @@ const form = document.querySelector("form");
       ladeVertraege();
     } catch (error) {
       console.error("Fehler beim Speichern:", error);
-      alert("Speichern fehlgeschlagen.");
+      alert("💔 Speichern fehlgeschlagen.");
     }
   });
 
@@ -265,10 +265,10 @@ const form = document.querySelector("form");
           : "";
       table.innerHTML = `
         <thead><tr>
-          <th data-sort="name">Name${sortPfeil("name")}</th>
-          <th data-sort="kosten">Kosten${sortPfeil("kosten")}</th>
-          <th data-sort="intervall">Intervall${sortPfeil("intervall")}</th>
-          <th data-sort="ablaufdatum">Ende${sortPfeil("ablaufdatum")}</th>
+          <th data-sort="name">Name ❤${sortPfeil("name")}</th>
+          <th data-sort="kosten">Kosten 💘${sortPfeil("kosten")}</th>
+          <th data-sort="intervall">Intervall 💝${sortPfeil("intervall")}</th>
+          <th data-sort="ablaufdatum">Ende 💌${sortPfeil("ablaufdatum")}</th>
           <th></th>
         </tr></thead>
         <tbody></tbody>
@@ -311,9 +311,9 @@ const form = document.querySelector("form");
           }
         }
 
-        const nameDisplay = highlight ? `❗ ${v.name}` : v.name;
+        const nameDisplay = highlight ? `❣️ ${v.name}` : v.name;
 
-        row.style.color = highlight ? "red" : "";
+        row.style.color = highlight ? "#ff1a75" : "";
         row.innerHTML = `
           <td>${nameDisplay}</td>
           <td>${v.kosten.toFixed(2)} €</td>
@@ -378,10 +378,9 @@ const form = document.querySelector("form");
       liste.appendChild(table);
 
       summenbereich.innerHTML = `
-        <br><br>
         <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%;">
           <thead>
-            <tr><th colspan="2">Gesamtkosten</th></tr>
+            <tr><th colspan="2">💝 Gesamtkosten der Liebe</th></tr>
           </thead>
           <tbody>
             <tr><td>monatlich</td><td>${summeMonatlich.toFixed(2)} €</td></tr>
