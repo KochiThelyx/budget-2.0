@@ -34,19 +34,67 @@
       cursor: pointer;
     }
 
-    img {
-      max-width: 100%;
+    #bild-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5em;
+      align-items: flex-start;
+    }
+
+    .bild-karte {
+      flex: 1 1 320px;
+      max-width: 420px;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 12px;
+      padding: 1em;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75em;
+    }
+
+    .bild-karte img {
+      width: 100%;
       height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .bild-karte p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
   <a href="index.html" class="zurueck-button" aria-label="Zur Startseite">🏠</a>
   <h1>🖼️ Bild des Tages</h1>
-  <div id="bild-container">Lade Bild des Tages...</div>
+  <div id="bild-container">
+    <p>Lade Bild des Tages...</p>
+  </div>
 
   <script>
     document.body.classList.add("mobile-mode");
+
+    function erzeugeZweitesBildKarte() {
+      const karte = document.createElement("article");
+      karte.className = "bild-karte";
+
+      const bild = document.createElement("img");
+      bild.src = "https://knetenking.kochithelyx.de/potd/potd.jpg";
+      bild.alt = "Bild des Tages von knetenking";
+      bild.loading = "lazy";
+      karte.appendChild(bild);
+
+      const text = document.createElement("p");
+      text.textContent = "Bildquelle: knetenking";
+      karte.appendChild(text);
+
+      return karte;
+    }
 
     async function ladeBildDesTages() {
       const heute = new Date();
@@ -63,22 +111,38 @@
         const bild = data?.image?.image;
 
         const container = document.getElementById("bild-container");
+        container.innerHTML = "";
+
+        const wikipediaKarte = document.createElement("article");
+        wikipediaKarte.className = "bild-karte";
+
         if (bild && bild.source) {
           const img = document.createElement("img");
           img.src = bild.source;
           img.alt = bild.title || "Bild des Tages";
-          container.innerHTML = "";
-          container.appendChild(img);
+          wikipediaKarte.appendChild(img);
           if (bild.description) {
             const p = document.createElement("p");
             p.textContent = bild.description.text || "";
-            container.appendChild(p);
+            wikipediaKarte.appendChild(p);
           }
         } else {
-          container.textContent = "Kein Bild gefunden.";
+          const p = document.createElement("p");
+          p.textContent = "Kein Bild gefunden.";
+          wikipediaKarte.appendChild(p);
         }
+
+        container.appendChild(wikipediaKarte);
+        container.appendChild(erzeugeZweitesBildKarte());
       } catch (e) {
-        document.getElementById("bild-container").textContent = "Fehler beim Laden.";
+        const container = document.getElementById("bild-container");
+        container.innerHTML = "";
+
+        const fehlermeldung = document.createElement("article");
+        fehlermeldung.className = "bild-karte";
+        fehlermeldung.textContent = "Fehler beim Laden.";
+        container.appendChild(fehlermeldung);
+        container.appendChild(erzeugeZweitesBildKarte());
       }
     }
 
