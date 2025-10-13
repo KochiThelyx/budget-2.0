@@ -188,21 +188,16 @@ function evaluateTask(task, history, currentIso) {
 function computePlan(settings, history, currentIso) {
   const rand = seededRandFactory(`${settings.householdId}:${currentIso.year}-KW${currentIso.week}`);
   const eligible = [];
-  const notEligible = [];
 
   for (const task of settings.tasks) {
     const evaluation = evaluateTask(task, history, currentIso);
     if (evaluation.eligible) {
-      eligible.push({ task });
-    } else {
-      notEligible.push({ task, reasons: evaluation.reasons });
+      eligible.push(task);
     }
   }
 
-  const shuffledEligible = randShuffle(eligible.map((item) => item.task), rand);
-  const selectedCount = Math.min(settings.members.length, shuffledEligible.length);
-  const selectedTasks = shuffledEligible.slice(0, selectedCount);
-  const missingTaskSlots = Math.max(0, settings.members.length - selectedTasks.length);
+  const shuffledEligible = randShuffle([...eligible], rand);
+  const selectedTasks = shuffledEligible.slice(0, settings.members.length);
   const assignmentTasks = [...selectedTasks];
   while (assignmentTasks.length < settings.members.length) {
     assignmentTasks.push({ name: "Frei/Joker", freq: "placeholder", minGapWeeks: 0 });
@@ -218,34 +213,14 @@ function computePlan(settings, history, currentIso) {
     task: assignmentTasks[index] ? assignmentTasks[index].name : "Frei/Joker",
   }));
 
-  return {
-    assignments,
-    rotationIndex,
-    eligibleTasks: shuffledEligible,
-    selectedCount,
-    missingTaskSlots,
-    notEligible,
-  };
-}
-
-function formatAssignments(assignments, currentIso, householdId) {
-  const lines = assignments.map(({ member, task }) => `${member} → ${task}`);
-  return `🧹 Putzsonntag · KW ${currentIso.week} · ${currentIso.year}\nHaushalt: ${householdId}\n${lines.join("\n")}`;
-}
-
-function getHistoryEntry(history, iso) {
-  return history.find((entry) => entry.year === iso.year && entry.isoWeek === iso.week);
+  return { assignments };
 }
 
 function upsertHistoryEntry(history, iso, assignments) {
   const filtered = history.filter((entry) => !(entry.year === iso.year && entry.isoWeek === iso.week));
   const snapshot = assignments.map((item) => ({ member: item.member, task: item.task }));
-  filtered.unshift({ year: iso.year, isoWeek: iso.week, assignments: snapshot, fixed: true });
+  filtered.unshift({ year: iso.year, isoWeek: iso.week, assignments: snapshot });
   return filtered;
-}
-
-function deleteHistoryEntry(history, iso) {
-  return history.filter((entry) => !(entry.year === iso.year && entry.isoWeek === iso.week));
 }
 
 function renderAssignments(tbody, assignments) {
@@ -266,44 +241,6 @@ function renderAssignments(tbody, assignments) {
     tr.append(memberCell, taskCell);
     tbody.appendChild(tr);
   });
-}
-
-function renderEligibility(listElement, planData) {
-  listElement.innerHTML = "";
-  const eligibleNames = planData.eligibleTasks.map((task) => task.name);
-  const eligibleHeading = document.createElement("li");
-  eligibleHeading.textContent = `✅ Einsatzbereit: ${eligibleNames.length ? eligibleNames.join(", ") : "–"}`;
-  listElement.appendChild(eligibleHeading);
-
-  if (planData.eligibleTasks.length > planData.selectedCount) {
-    const notUsed = document.createElement("li");
-    const skipped = planData.eligibleTasks.slice(planData.selectedCount).map((task) => task.name).join(", ");
-    notUsed.textContent = `ℹ️ Nicht vergeben (Mitglieder-Limit erreicht): ${skipped}`;
-    listElement.appendChild(notUsed);
-  }
-
-  if (planData.missingTaskSlots > 0) {
-    const filler = document.createElement("li");
-    filler.textContent = `🃏 ${planData.missingTaskSlots}× Frei/Joker mangels Aufgaben`;
-    listElement.appendChild(filler);
-  }
-
-  for (const { task, reasons } of planData.notEligible) {
-    const li = document.createElement("li");
-    li.textContent = `🚫 ${task.name}: ${reasons.join("; ")}`;
-    listElement.appendChild(li);
-  }
-}
-
-function showMessage(el, text, timeout = 3500) {
-  el.textContent = text;
-  if (timeout > 0) {
-    setTimeout(() => {
-      if (el.textContent === text) {
-        el.textContent = "";
-      }
-    }, timeout);
-  }
 }
 
 function populateMembersEditor(container, members) {
@@ -449,12 +386,7 @@ function collectTasks(container) {
 function init() {
   const weekDisplay = document.getElementById("week-display");
   const assignmentBody = document.getElementById("assignment-body");
-  const eligibilityList = document.getElementById("eligibility-list");
-  const statusPill = document.getElementById("status-pill");
-  const messageEl = document.getElementById("message");
   const recalcBtn = document.getElementById("recalc-btn");
-  const shareBtn = document.getElementById("share-btn");
-  const fixBtn = document.getElementById("fix-btn");
   const settingsBtn = document.getElementById("settings-btn");
   const settingsDialog = document.getElementById("settings-dialog");
   const membersEditor = document.getElementById("members-editor");
@@ -475,65 +407,13 @@ function init() {
     settings = loadSettings();
 
     const plan = computePlan(settings, history, todayIso);
-    const fixedEntry = getHistoryEntry(history, todayIso);
-    const assignments = fixedEntry ? fixedEntry.assignments : plan.assignments;
-    renderAssignments(assignmentBody, assignments);
-    renderEligibility(eligibilityList, plan);
-
-    const isFixed = Boolean(fixedEntry);
-    statusPill.hidden = !isFixed;
-    statusPill.textContent = isFixed ? "Fixiert" : "";
-    fixBtn.textContent = isFixed ? "🔓 Fixierung lösen" : "🛡️ Fixieren";
-    fixBtn.dataset.state = isFixed ? "locked" : "free";
+    renderAssignments(assignmentBody, plan.assignments);
+    history = upsertHistoryEntry(history, todayIso, plan.assignments);
+    saveHistory(history);
   }
 
   recalcBtn.addEventListener("click", () => {
     refresh();
-    showMessage(messageEl, "Plan neu berechnet (deterministisch)");
-  });
-
-  shareBtn.addEventListener("click", async () => {
-    const plan = computePlan(settings, history, todayIso);
-    const fixedEntry = getHistoryEntry(history, todayIso);
-    const assignments = fixedEntry ? fixedEntry.assignments : plan.assignments;
-    const text = formatAssignments(assignments, todayIso, settings.householdId);
-    if (navigator.share) {
-      try {
-        await navigator.share({ text, title: "Putzsonntag" });
-        showMessage(messageEl, "Geteilt ✔️");
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error(error);
-          showMessage(messageEl, "Teilen abgebrochen", 3000);
-        }
-      }
-    } else if (navigator.clipboard && navigator.clipboard.writeText) {
-      try {
-        await navigator.clipboard.writeText(text);
-        showMessage(messageEl, "Plan in Zwischenablage kopiert");
-      } catch (error) {
-        console.error(error);
-        showMessage(messageEl, "Kopieren fehlgeschlagen", 4000);
-      }
-    } else {
-      showMessage(messageEl, text, 6000);
-    }
-  });
-
-  fixBtn.addEventListener("click", () => {
-    const currentPlan = computePlan(settings, history, todayIso);
-    const state = fixBtn.dataset.state;
-    if (state === "locked") {
-      history = deleteHistoryEntry(history, todayIso);
-      saveHistory(history);
-      refresh();
-      showMessage(messageEl, "Fixierung entfernt");
-      return;
-    }
-    history = upsertHistoryEntry(history, todayIso, currentPlan.assignments);
-    saveHistory(history);
-    refresh();
-    showMessage(messageEl, "Woche fixiert");
   });
 
   settingsBtn.addEventListener("click", () => {
@@ -561,11 +441,11 @@ function init() {
     const members = collectMembers(membersEditor);
     const tasks = collectTasks(tasksEditor);
     if (!members.length) {
-      showMessage(messageEl, "Bitte mindestens ein Mitglied angeben", 4000);
+      window.alert("Bitte mindestens ein Mitglied angeben.");
       return;
     }
     if (!tasks.length) {
-      showMessage(messageEl, "Bitte mindestens eine Aufgabe anlegen", 4000);
+      window.alert("Bitte mindestens eine Aufgabe anlegen.");
       return;
     }
     const newSettings = { householdId, members, tasks };
@@ -573,7 +453,6 @@ function init() {
     settings = newSettings;
     settingsDialog.close();
     refresh();
-    showMessage(messageEl, "Stammdaten gespeichert");
   });
 
   settingsDialog.addEventListener("cancel", (event) => {
