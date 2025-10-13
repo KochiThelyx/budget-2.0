@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🧹 Putzsonntag</title>
+    <meta name="theme-color" content="#e6f2ff" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="icon-192.png" />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      body {
+        margin: 1em;
+        font-family: sans-serif;
+        background-color: #e6f2ff;
+        font-size: 20px;
+      }
+
+      a {
+        color: #1f5fa0;
+      }
+
+      h1 {
+        font-size: 42px;
+        margin: 2.4em 0 0.6em 0;
+        text-align: center;
+      }
+
+      .zurueck-link {
+        position: absolute;
+        top: 1em;
+        right: 1em;
+        font-size: 28px;
+        text-decoration: none;
+      }
+
+      .content {
+        max-width: 760px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2em;
+      }
+
+      .info-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6em;
+        justify-content: center;
+      }
+
+      button {
+        font-size: 28px;
+        padding: 0.6em 1em;
+        border-radius: 16px;
+        border: none;
+        background-color: #4a90e2;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background-color: #fff;
+        color: #1f5fa0;
+        border: 2px solid #1f5fa0;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      thead {
+        background-color: #4a90e2;
+        color: #fff;
+        font-size: 26px;
+      }
+
+      th,
+      td {
+        padding: 0.6em 0.8em;
+        font-size: 28px;
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: rgba(74, 144, 226, 0.12);
+      }
+
+      .assignment-task {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15em;
+      }
+
+      .task-note {
+        font-size: 18px;
+        color: #1f5fa0;
+      }
+
+      dialog {
+        border: none;
+        border-radius: 16px;
+        padding: 1.5em;
+        max-width: 90vw;
+        width: 640px;
+        background: #f6fbff;
+      }
+
+      dialog::backdrop {
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .dialog-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        font-size: 24px;
+      }
+
+      .dialog-section {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 0.8em;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+      }
+
+      .dialog-section h3 {
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .dialog-section label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3em;
+        font-size: 22px;
+      }
+
+      .dialog-section input,
+      .dialog-section select {
+        font-size: 24px;
+        padding: 0.4em 0.6em;
+        border-radius: 10px;
+        border: 1px solid #a3c4f3;
+      }
+
+      .list-editor {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4em;
+      }
+
+      .list-row {
+        display: flex;
+        gap: 0.4em;
+        align-items: center;
+      }
+
+      .list-row input[type="text"] {
+        flex: 1;
+      }
+
+      .freq-inputs {
+        display: flex;
+        gap: 0.4em;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .icon-button {
+        border: none;
+        background: none;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.6em;
+      }
+
+      .dialog-actions button {
+        font-size: 24px;
+        padding: 0.5em 0.9em;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          font-size: 18px;
+        }
+
+        h1 {
+          font-size: 36px;
+          margin-top: 3.2em;
+        }
+
+        .info-bar {
+          font-size: 24px;
+        }
+
+        .zurueck-link {
+          font-size: 24px;
+        }
+
+        button {
+          font-size: 24px;
+        }
+
+        th,
+        td {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="index.html" class="zurueck-link">🏠 Zurück</a>
+    <h1>🧹 Putzsonntag</h1>
+    <div class="content">
+      <div class="info-bar">
+        <span id="week-display">KW -- · ----</span>
+      </div>
+      <table aria-label="Wochenplan">
+        <thead>
+          <tr>
+            <th>Person</th>
+            <th>Aufgabe</th>
+          </tr>
+        </thead>
+        <tbody id="assignment-body"></tbody>
+      </table>
+      <div class="button-row">
+        <button id="recalc-btn" type="button">🔁 Neu berechnen</button>
+        <button id="settings-btn" type="button" class="secondary">⚙️ Stammdaten</button>
+      </div>
+    </div>
+
+    <dialog id="settings-dialog">
+      <form method="dialog" class="dialog-content" id="settings-form">
+        <h2>⚙️ Stammdaten</h2>
+        <div class="dialog-section">
+          <h3>Haushalt</h3>
+          <label>
+            Haushalts-ID
+            <input type="text" id="household-id-input" required />
+          </label>
+        </div>
+        <div class="dialog-section">
+          <h3>Mitglieder</h3>
+          <div class="list-editor" id="members-editor"></div>
+          <button type="button" id="add-member" class="secondary">➕ Mitglied</button>
+        </div>
+        <div class="dialog-section">
+          <h3>Aufgaben</h3>
+          <div class="list-editor" id="tasks-editor"></div>
+          <button type="button" id="add-task" class="secondary">➕ Aufgabe</button>
+        </div>
+        <div class="dialog-actions">
+          <button type="button" id="cancel-settings" class="secondary">Abbrechen</button>
+          <button type="submit" id="save-settings">Speichern</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="putzsonntag.js" type="module"></script>
+  </body>
+</html>
