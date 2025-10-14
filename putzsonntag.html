@@ -119,8 +119,8 @@
         border: none;
         border-radius: 16px;
         padding: 1.5em;
-        max-width: 90vw;
-        width: 640px;
+        max-width: min(640px, 92vw);
+        width: 100%;
         background: #f6fbff;
       }
 
@@ -133,6 +133,8 @@
         flex-direction: column;
         gap: 1em;
         font-size: 24px;
+        max-height: 80vh;
+        overflow-y: auto;
       }
 
       .dialog-section {
@@ -174,10 +176,12 @@
         display: flex;
         gap: 0.4em;
         align-items: center;
+        flex-wrap: wrap;
       }
 
       .list-row input[type="text"] {
         flex: 1;
+        min-width: 180px;
       }
 
       .freq-inputs {
@@ -208,28 +212,94 @@
       @media (max-width: 600px) {
         body {
           font-size: 18px;
+          margin: 0.8em;
         }
 
         h1 {
-          font-size: 36px;
-          margin-top: 3.2em;
+          font-size: 32px;
+          margin-top: 3.4em;
         }
 
         .info-bar {
-          font-size: 24px;
+          font-size: 22px;
         }
 
         .zurueck-link {
-          font-size: 24px;
+          font-size: 22px;
+        }
+
+        .content {
+          gap: 0.9em;
+        }
+
+        .button-row {
+          gap: 0.4em;
         }
 
         button {
-          font-size: 24px;
+          font-size: 22px;
+          padding: 0.55em 0.9em;
+          border-radius: 12px;
         }
 
         th,
         td {
+          font-size: 22px;
+          padding: 0.55em 0.7em;
+        }
+
+        dialog {
+          padding: 1.1em;
+          border-radius: 14px;
+        }
+
+        .dialog-content {
+          gap: 0.8em;
+          font-size: 20px;
+          max-height: 75vh;
+        }
+
+        .dialog-section {
+          gap: 0.4em;
+          padding: 0.7em;
+        }
+
+        .dialog-section h3 {
           font-size: 24px;
+        }
+
+        .dialog-section label {
+          font-size: 20px;
+        }
+
+        .dialog-section input,
+        .dialog-section select {
+          font-size: 20px;
+          padding: 0.35em 0.55em;
+        }
+
+        .list-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .list-row input[type="text"],
+        .list-row select {
+          width: 100%;
+        }
+
+        .freq-inputs {
+          gap: 0.3em;
+        }
+
+        .dialog-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .dialog-actions button {
+          font-size: 20px;
+          width: 100%;
         }
       }
     </style>
